@@ -23,7 +23,7 @@ BOARD = ROOT / "hardware/kicad/elfii-32k-board.kicad_pcb"
 PARTS = {
     "U1": ("Package_DIP:DIP-20_W7.62mm", "74HC573", 81.0, 69.0),
     "U2": ("Package_DIP:DIP-28_W15.24mm", "CY62256-70PC", 121.0, 69.0),
-    "U3": ("Package_DIP:DIP-16_W7.62mm", "74LS151", 159.0, 73.0),
+    "U3": ("Package_DIP:DIP-16_W7.62mm", "74HC151", 159.0, 73.0),
     "U4": ("Package_DIP:DIP-14_W7.62mm", "CD4011", 184.0, 74.0),
     "SW1": (
         "Button_Switch_THT:SW_DIP_SPSTx08_Slide_9.78x22.5mm_W7.62mm_P2.54mm",
