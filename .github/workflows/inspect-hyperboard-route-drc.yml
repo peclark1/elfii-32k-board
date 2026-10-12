@@ -1,0 +1,34 @@
+name: Inspect Hyperboard route DRC evidence
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/inspect-hyperboard-route-drc.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read original successful route evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 38270282254 \
+            --repo peclark1/elfii-32k-board \
+            --name hyperboard-route-preview \
+            --dir out/review
+          echo "=== Files in archived route trial ==="
+          find out/review -maxdepth 2 -type f | sort
+          echo "=== Remaining footprint-library DRC finding ==="
+          grep -A 8 '^\\[lib_footprint_issues\\]' out/review/drc-after.txt || true
+          echo "=== First connector copper-to-edge finding ==="
+          grep -A 5 -m 1 '^\\[copper_edge_clearance\\]' out/review/drc-after.txt || true
+          echo "=== Summarized physical checks ==="
+          cat out/review/routing-summary.json
