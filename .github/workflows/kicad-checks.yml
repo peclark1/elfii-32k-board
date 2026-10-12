@@ -39,6 +39,18 @@ jobs:
       - name: Verify exported KiCad pin/net assignments
         if: always()
         run: python3 tests/test_netlist.py out/elfii-32k-board.net
+      - name: Generate a separate Hyperboard-derived PCB placement candidate
+        run: |
+          mkdir -p out/pcb-candidate
+          /usr/bin/python3 scripts/build_pcb_candidate.py out/elfii-32k-board.net out/pcb-candidate/elfii-32k-candidate.kicad_pcb
+      - name: Verify candidate connector, outline and KiCad-exported pad nets
+        run: |
+          python3 tests/test_mechanical_geometry.py out/pcb-candidate/elfii-32k-candidate.kicad_pcb
+          python3 tests/test_pcb_net_assignment.py out/elfii-32k-board.net out/pcb-candidate/elfii-32k-candidate.kicad_pcb --candidate-contact-69-open
+      - name: Inspect KiCad PCB DRC on unrouted candidate (report only)
+        run: |
+          kicad-cli pcb drc out/pcb-candidate/elfii-32k-candidate.kicad_pcb -o out/pcb-candidate/drc-unrouted.txt || true
+          head -n 100 out/pcb-candidate/drc-unrouted.txt
       - name: Guard disputed ELF II bus contacts
         run: python3 tests/test_bus_contact_safety.py
 
