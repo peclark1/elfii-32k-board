@@ -53,6 +53,10 @@ jobs:
         run: |
           mkdir -p out/gerbers
           kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Mask,B.Mask,Edge.Cuts -o out/gerbers/ hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb
+      - name: Export front and back PCB SVGs for layout review
+        run: |
+          mkdir -p out/pcb-svg
+          kicad-cli pcb export svg -l F.Cu,B.Cu,F.Silkscreen,Edge.Cuts -o out/pcb-svg/ hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb
       - name: Require clean KiCad schematic ERC
         run: |
           kicad-cli sch erc hardware/kicad/elfii-32k-board.kicad_sch -o out/erc.txt
