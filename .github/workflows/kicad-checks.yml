@@ -46,7 +46,7 @@ jobs:
           cat out/erc.txt
       - name: Run KiCad PCB DRC (diagnostics only, PCB intentionally unrouted)
         run: |
-          kicad-cli pcb drc hardware/kicad/elfii-32k-board.kicad_pcb -o out/drc.txt || true
+          kicad-cli pcb drc --refill-zones hardware/kicad/elfii-32k-board.kicad_pcb -o out/drc.txt || true
           cat out/drc.txt
       - name: Explain outstanding electrical validation
         run: |
