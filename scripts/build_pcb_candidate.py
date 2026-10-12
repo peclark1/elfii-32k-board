@@ -39,7 +39,7 @@ PARTS = {
     ),
     "JP2": (
         "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
-        "MEM_DISABLE_UNVERIFIED", 190.0, 103.0,
+        "MB_RAM_DISABLE_SLOT5", 190.0, 103.0,
     ),
     "C1": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 94.0, 69.0),
     "C2": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 142.0, 69.0),
@@ -48,11 +48,12 @@ PARTS = {
     "C5": ("Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", "10u POLARIZED PIN1=+5V", 199.0, 48.0),
 }
 
-# Physical edge-contact 69 is disputed on the EARLY Netronics motherboard.
-# Keep the copper finger but do not connect it to a jumper or GND. JP2 remains
-# on this exploratory layout with a disconnected motherboard end; must be
-# resolved before synchronization can be considered complete.
-RESERVED_OPEN_CONTACTS = {("J1", "69"), ("J1", "82")}
+# Slot-5 baseline: the known-working AVI Hyperboard grounds expansion contact 69,
+# which disables the original motherboard RAM. On this standalone PCB J1-69
+# must instead route to JP2 pin 1 (MB_RAM_DISABLE) and JP2 pin 2 to GND.
+# Closing JP2 reproduces the Hyperboard grounding action; the default
+# mechanical state is OPEN without a jumper. J1-82 is still NC.
+RESERVED_OPEN_CONTACTS = {("J1", "82")}
 
 
 def footprint_library_location(library: str) -> Path:
@@ -154,7 +155,8 @@ def main():
     print(f"Candidate: {target} ({target.stat().st_size} bytes)")
     print(f"Footprints: {len(list(board.GetFootprints()))}; tracks: {len(list(board.GetTracks()))}")
     print(f"Schematic pin memberships assigned: {len(connected)}")
-    print("J1 contact 69 RESERVED NC. C5 radial pin1 polarity must be inspected; finger fabrication STILL UNVERIFIED.")
+    print("J1-69 connected to JP2-1 (MB_RAM_DISABLE); JP2-2 is GND. Install JP2 shunt in Slot 5 to reproduce proven Hyperboard RAM inhibit.")
+    print("J1-82 remains NC; verify C5 radial pin1 polarity and finger fabrication before manufacturing.")
     print("UNROUTED PLACEMENT STUDY ONLY. DO NOT FABRICATE.")
 
 
