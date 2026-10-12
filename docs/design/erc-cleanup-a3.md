@@ -32,3 +32,9 @@ These numbers are *actual output of the first check*, not judgments about readin
 - Correct manufacture finish/plating and bevel of fingers and test-fitted edge geometry.
 
 The KiCad ERC/DRC workflow intentionally archives diagnostics instead of failing the build until we have a reviewed policy for the intentional remaining exceptions.
+
+## Validated result — KiCad 9 run 38192326858
+
+**Actual ERC: 0 violations, 0 errors, 0 warnings.** The 154 off-grid warnings and two undriven power errors were eliminated. KiCad PDF and netlist export passed; all control logic, original bus-contact safeguards, pin/net mapping, PCB pad assignment and 50-mil grid regression tests passed. The schematic ERC check has therefore been promoted to a **mandatory passing CI gate** on main.
+
+**Actual DRC: 100 violations and 87 unconnected items** remain unchanged while the PCB is deliberately unrouted. The 100 findings comprise 86 intentional edge-finger copper-to-edge clearance reports and 14 library-footprint mismatches; these are not yet accepted as manufacturing-safe and must be addressed during layout cleanup.
