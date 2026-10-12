@@ -34,9 +34,7 @@ cassette and boot functions.
 - `hardware/kicad/elfii-32k-board.kicad_sch` is the **active new
   Hyperboard-derived schematic**. KiCad 9 ERC and pin-specific netlist
   regression tests have passed (138 checked pin memberships across 41 nets).
-- `hardware/kicad/elfii-32k-board.kicad_pcb` is **still the older A5
-  partially routed electrical design**, and must not be treated as
-  synchronized with the new schematic.
+- `hardware/kicad/elfii-32k-board.kicad_pcb` is synchronized with the active electrical schematic on the **dedicated review branch**. `main` continues to retain its older A5 PCB study until final release gates are met.
 - `scripts/build_pcb_candidate.py` creates a physically preserved,
   new-architecture through-hole PCB from the current KiCad netlist,
   without touching the obsolete PCB traces. The initial candidate has
@@ -53,24 +51,11 @@ It is removed only after a genuine schematic-to-PCB synchronization.
 
 ## Verified routing milestone — 12 October 2026
 
-The first full two-layer routing pass is now available on the separate
-[fully routed Hyperboard preview branch](https://github.com/peclark1/elfii-32k-board/tree/experiment/hyperboard-route-ceee8d6e):
-**426 tracks, 27 vias, zero unconnected items**.
-
-The [full-project KiCad 9 validation run](https://github.com/peclark1/elfii-32k-board/actions/runs/38270750084)
-reports **zero DRC violations and zero unconnected pads** when run with the
-project-local footprint library and scoped edge-finger rules. The branch is
-an **engineering preview, not a fabrication-ready design**. Do not replace
-`main`'s old PCB until the schematic/PCB contact-69 decision is resolved.
-See the [routing checkpoint](docs/design/hyperboard-routing-checkpoint-2026-10-12.md).
+The initial 426-track/27-via trial was superseded by the coordinator-accepted [revised 438-track, 35-via Hyperboard PCB preview](https://github.com/peclark1/elfii-32k-board/tree/experiment/hyperboard-route-b57bb49a), where **J1-69 is physically routed to JP2-1**. The [pre-fabrication review branch](https://github.com/peclark1/elfii-32k-board/tree/feature/hyperboard-pcb-prefab-review) adds two GND zones, moves a dangerous +5V via out of the finger region, and independently verifies the copper in CI. This is a **review only, not fabrication authorization**. See [the updated PCB review](docs/design/prefabrication-layout-review-2026-10-12.md) and [the historical checkpoint](docs/design/hyperboard-routing-checkpoint-2026-10-12.md).
 
 ## Critical safety holds
 
-1. **J1-69:** historically described as an original motherboard-memory
-   disable signal; it is intentionally physically NC in candidate PCBs,
-   even though the schematic documents an optional jumper. Its behavior
-   on the user's early ELF II revision requires measurement first.
-   **J1-82** also remains NC.
+1. **J1-69:** original Slot-5 motherboard-RAM-disable behavior is established prior project evidence. The revised PCB connects J1-69 to JP2-1 and JP2-2 to GND; **shunt is normally open**, with no permanent ground strap. **J1-82 remains NC** until independently understood.
 2. Verify collisions and memory mapping against onboard 2101 RAM,
    Giant Board and any other memory devices.
 3. Check 1802 TPA/address, /CS, /OE and /WE timing and bus contention on
