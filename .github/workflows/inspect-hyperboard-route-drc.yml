@@ -20,7 +20,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh run download 38270282254 \
+          gh run download 38273012899 \
             --repo peclark1/elfii-32k-board \
             --name hyperboard-route-preview \
             --dir out/review
@@ -37,7 +37,7 @@ jobs:
       - name: Check out fully routed review branch in actual KiCad project directory
         uses: actions/checkout@v4
         with:
-          ref: experiment/hyperboard-route-ceee8d6e
+          ref: experiment/hyperboard-route-b57bb49a
       - name: Install KiCad 9 for final-location DRC
         run: |
           sudo apt-get update
