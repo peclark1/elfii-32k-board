@@ -122,7 +122,7 @@
 (in_bom yes) (on_board yes)
 (property "Reference" "SW" (at 0 26.669999999999998 0) (effects (font (size 1.27 1.27))))
 (property "Value" "RAM_PAGE_ENABLE" (at 0 -26.669999999999998 0) (effects (font (size 1.27 1.27))))
-(property "Footprint" "Button_Switch_THT:SW_DIP_SPSTx08_Slide_9.78x21.8mm_W7.62mm_P2.54mm" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+(property "Footprint" "Button_Switch_THT:SW_DIP_SPSTx08_Slide_9.78x22.5mm_W7.62mm_P2.54mm" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
 (symbol "SW_DIP_8_0_1" (rectangle (start -15.24 22.86) (end 15.24 -22.86) (stroke (width 0.254) (type default)) (fill (type background))))
 (symbol "SW_DIP_8_1_1"
 (pin passive line (at -17.78 -17.78 0) (length 2.54) (name "L0" (effects (font (size 1.016 1.016)))) (number "1" (effects (font (size 1.016 1.016)))))
