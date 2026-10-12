@@ -9,8 +9,9 @@ solder-mask details, mating-clearance or early-Netronics pin compatibility.
 from hashlib import sha256
 from pathlib import Path
 import re
+import sys
 
-BOARD = Path("hardware/kicad/elfii-32k-board.kicad_pcb")
+BOARD = Path(sys.argv[1]) if len(sys.argv) == 2 else Path("hardware/kicad/elfii-32k-board.kicad_pcb")
 OUTLINE_SHA256 = "f395f8a74e71894db1cd142bd78cfc542dd4f4d63e9f449eaeb58fd98ca8da19"
 FINGER_SHA256 = "f9394fe5680a644c3366593a7f2f33651640ed1e015784241c8b26cfe838998e"
 
