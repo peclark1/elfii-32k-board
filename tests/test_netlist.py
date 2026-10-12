@@ -135,6 +135,41 @@ def main():
             if item not in actual:
                 errors.append(f"{signal} missing {item}; actual={sorted(actual)}")
 
+    # Membership-only checks can miss a newly shorted pin on an otherwise
+    # correctly named net. The core SRAM, address-latch and control nets
+    # should have NO unanticipated pin connections.
+    critical_nets = (
+        [f"MA{bit}" for bit in range(8)]
+        + [f"D{bit}" for bit in range(8)]
+        + [f"A{bit}" for bit in range(8, 16)]
+        + ["TPA", "~MRD", "~MWR", "RAM_CS_N", "HALF_EN", "A15_N"]
+    )
+    for signal in critical_nets:
+        unexpected = nets.get(signal, set()) - set(EXPECTED[signal])
+        if unexpected:
+            errors.append(
+                f"{signal} contains unexpected pins (possible shorts): {sorted(unexpected)}"
+            )
+
+    # The SRAM must have every physical pin on exactly one expected signal.
+    expected_sram_pins = {
+        pin: signal
+        for signal, required in EXPECTED.items()
+        for ref, pin in required if ref == "U2"
+    }
+    actual_sram_pins = {}
+    for signal, nodes in nets.items():
+        for ref, pin in nodes:
+            if ref == "U2":
+                actual_sram_pins.setdefault(pin, []).append(signal)
+    for pin in map(str, range(1, 29)):
+        wanted = expected_sram_pins.get(pin)
+        connected = actual_sram_pins.get(pin, [])
+        if wanted is None or connected != [wanted]:
+            errors.append(
+                f"U2 pin {pin}: expected {[wanted]}, actual {connected}"
+            )
+
     # Explicitly guard the source correction: connector P3-69 must not land on SRAM /CS.
     cs_nodes = nets.get("RAM_CS_N", set())
     if ("J1", "69") in cs_nodes:
