@@ -49,6 +49,9 @@ jobs:
       - name: Fill PCB copper zones into a temporary board
         run: |
           /usr/bin/python3 tests/fill_zones.py hardware/kicad/elfii-32k-board.kicad_pcb hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb
+      - name: Export Specctra DSN for optional offline Freerouting
+        run: |
+          /usr/bin/python3 scripts/export_specctra.py hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb out/elfii-32k-board.dsn
       - name: KiCad PCB import / Gerber export
         run: |
           mkdir -p out/gerbers
