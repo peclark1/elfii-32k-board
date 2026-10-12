@@ -4631,6 +4631,10 @@
   (via (at 122.555 139.827) (size 0.6) (drill 0.3) (layers "F.Cu" "B.Cu") (net 24) (tstamp "c0de2026-0000-4000-8000-000000013227"))
   (via (at 97.155 143.002) (size 0.6) (drill 0.3) (layers "F.Cu" "B.Cu") (net 24) (tstamp "c0de2026-0000-4000-8000-000000013228"))
 
+(segment (start 173.5836 148.7424) (end 173.5836 142.24) (width 0.3) (layer "F.Cu") (net 37) (tstamp "ab102026-0000-4000-8000-000000000001"))
+(via (at 173.5836 142.24) (size 0.6) (drill 0.3) (layers "F.Cu" "B.Cu") (net 37) (tstamp "ab102026-0000-4000-8000-000000000002"))
+(segment (start 168.5036 148.7424) (end 168.5036 142.24) (width 0.3) (layer "B.Cu") (net 18) (tstamp "ab102026-0000-4000-8000-000000000003"))
+(via (at 168.5036 142.24) (size 0.6) (drill 0.3) (layers "F.Cu" "B.Cu") (net 18) (tstamp "ab102026-0000-4000-8000-000000000004"))
 (zone (net 18) (net_name "/GND") (layer "F.Cu")
 (tstamp "9a2d2026-0000-4000-8000-000000000001")
 (hatch edge 0.508)
@@ -4652,9 +4656,5 @@
 )
 
 
-(segment (start 173.5836 148.7424) (end 173.5836 142.24) (width 0.3) (layer "F.Cu") (net 37) (tstamp "ab102026-0000-4000-8000-000000000001"))
-(via (at 173.5836 142.24) (size 0.6) (drill 0.3) (layers "F.Cu" "B.Cu") (net 37) (tstamp "ab102026-0000-4000-8000-000000000002"))
-(segment (start 168.5036 148.7424) (end 168.5036 142.24) (width 0.3) (layer "B.Cu") (net 18) (tstamp "ab102026-0000-4000-8000-000000000003"))
-(via (at 168.5036 142.24) (size 0.6) (drill 0.3) (layers "F.Cu" "B.Cu") (net 18) (tstamp "ab102026-0000-4000-8000-000000000004"))
 
 )
