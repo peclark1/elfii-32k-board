@@ -27,8 +27,10 @@ jobs:
           echo "=== Files in archived route trial ==="
           find out/review -maxdepth 2 -type f | sort
           echo "=== Remaining footprint-library DRC finding ==="
-          grep -A 8 '^\\[lib_footprint_issues\\]' out/review/drc-after.txt || true
+          grep -F -A 8 '[lib_footprint_issues]' out/review/drc-after.txt || true
+          echo "=== DRC report beginning ==="
+          head -n 12 out/review/drc-after.txt
           echo "=== First connector copper-to-edge finding ==="
-          grep -A 5 -m 1 '^\\[copper_edge_clearance\\]' out/review/drc-after.txt || true
+          grep -F -A 5 -m 1 '[copper_edge_clearance]' out/review/drc-after.txt || true
           echo "=== Summarized physical checks ==="
           cat out/review/routing-summary.json
