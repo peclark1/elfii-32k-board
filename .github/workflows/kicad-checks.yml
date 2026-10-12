@@ -27,6 +27,8 @@ jobs:
           kicad-cli sch export netlist -o out/elfii-32k-board.net hardware/kicad/elfii-32k-board.kicad_sch
       - name: Verify exported KiCad pin/net assignments
         run: python3 tests/test_netlist.py out/elfii-32k-board.net
+      - name: Guard disputed ELF II bus contacts
+        run: python3 tests/test_bus_contact_safety.py
       - name: Compare schematic and PCB pad net assignments
         run: python3 tests/test_pcb_net_assignment.py out/elfii-32k-board.net hardware/kicad/elfii-32k-board.kicad_pcb
       - name: KiCad PCB import / Gerber export
