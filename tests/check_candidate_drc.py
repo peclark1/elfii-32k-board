@@ -43,4 +43,4 @@ if problems:
             print("  " + value)
     raise SystemExit(1)
 print(f"PASS: candidate contains no new PCB DRC classes: {dict(counts)}")
-print("HOLD: J1 edge fingers, open contact 69, unrouted pads and production treatment remain unapproved.")
+print("HOLD: card-edge process, optional JP2 motherboard-RAM-disable shunt, hardware timing and fabrication remain unapproved.")
