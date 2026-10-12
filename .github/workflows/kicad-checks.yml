@@ -36,6 +36,9 @@ jobs:
         run: python3 tests/test_bus_contact_safety.py
       - name: Compare schematic and PCB pad net assignments
         run: python3 tests/test_pcb_net_assignment.py out/elfii-32k-board.net hardware/kicad/elfii-32k-board.kicad_pcb
+      - name: Fill PCB copper zones into a temporary board
+        run: |
+          /usr/bin/python3 tests/fill_zones.py hardware/kicad/elfii-32k-board.kicad_pcb out/elfii-32k-filled.kicad_pcb
       - name: KiCad PCB import / Gerber export
         run: |
           mkdir -p out/gerbers
@@ -46,7 +49,7 @@ jobs:
           cat out/erc.txt
       - name: Run KiCad PCB DRC (diagnostics only, PCB intentionally unrouted)
         run: |
-          kicad-cli pcb drc --refill-zones hardware/kicad/elfii-32k-board.kicad_pcb -o out/drc.txt || true
+          kicad-cli pcb drc out/elfii-32k-filled.kicad_pcb -o out/drc.txt || true
           cat out/drc.txt
       - name: Explain outstanding electrical validation
         run: |
