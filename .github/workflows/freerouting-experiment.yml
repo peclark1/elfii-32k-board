@@ -1,0 +1,44 @@
+name: Freerouting trial (no repository modification)
+
+on:
+  push:
+    branches: ["experiment/freerouting-*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  route-trial:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install KiCad 9
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository -y ppa:kicad/kicad-9.0-releases
+          sudo apt-get update
+          sudo apt-get install -y kicad
+      - name: Export verified source DSN
+        run: |
+          mkdir -p out
+          /usr/bin/python3 tests/fill_zones.py hardware/kicad/elfii-32k-board.kicad_pcb out/elfii-32k-source-filled.kicad_pcb
+          /usr/bin/python3 scripts/export_specctra.py out/elfii-32k-source-filled.kicad_pcb out/elfii-32k-board.dsn
+      - name: Download pinned Freerouting CLI 2.5.0
+        run: |
+          curl -fLsS --retry 3 -o /tmp/freerouting-cli.tar.gz https://github.com/freerouting/freerouting/releases/download/v2.5.0/freerouting-cli-2.5.0-linux-x64.tar.gz
+          echo "64a957a9ef2a2fbde6ab2001bb32800f5ba34f9fd15575e363512934b870d63a  /tmp/freerouting-cli.tar.gz" | sha256sum -c -
+          mkdir -p /tmp/freerouting-cli
+          tar -xzf /tmp/freerouting-cli.tar.gz -C /tmp/freerouting-cli
+          find /tmp/freerouting-cli -maxdepth 4 -type f | head -60
+      - name: Identify Freerouting executable for next trial
+        run: |
+          find /tmp/freerouting-cli -maxdepth 5 -type f -executable -printf '%p\n' | head -40
+      - name: Upload routing experiment inputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: freerouting-experiment
+          path: out/
