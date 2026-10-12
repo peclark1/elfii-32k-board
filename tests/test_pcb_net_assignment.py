@@ -32,8 +32,14 @@ def board_pads(path):
 
 
 def main():
-    if len(sys.argv) != 3:
-        raise SystemExit("usage: test_pcb_net_assignment.py export.net board.kicad_pcb")
+    if len(sys.argv) not in (3, 4) or (
+        len(sys.argv) == 4 and sys.argv[3] != "--candidate-contact-69-open"
+    ):
+        raise SystemExit(
+            "usage: test_pcb_net_assignment.py export.net board.kicad_pcb "
+            "[--candidate-contact-69-open]"
+        )
+    candidate_69_open = len(sys.argv) == 4
     expected = {}
     for name, nodes in read_nets(Path(sys.argv[1])).items():
         # KiCad invents pseudo-nets for intentionally unconnected symbol pins.
@@ -41,11 +47,19 @@ def main():
         if name.startswith("unconnected-"):
             continue
         for node in nodes:
+            # The user's ORIGINAL early-Netronics contact 69 is an explicit
+            # unresolved safety exception on the exploratory PCB ONLY.
+            # The schematic's optional JP2 circuit is not yet routed to it.
+            if candidate_69_open and node == ("J1", "69"):
+                continue
             if node in expected and expected[node] != name:
                 raise ValueError(f"Schematic pin {node} on multiple nets")
             expected[node] = name
 
     actual = board_pads(Path(sys.argv[2]))
+    if candidate_69_open and actual.get(("J1", "69")) is not None:
+        raise SystemExit("FAIL: early Netronics J1 contact 69 must remain NC on candidate")
+
     missing = sorted((node, net) for node, net in expected.items() if actual.get(node) != net)
     unexpected = sorted((node, net) for node, net in actual.items() if net is not None and expected.get(node) != net)
     if missing or unexpected:
@@ -55,6 +69,8 @@ def main():
             print(f"UNEXPECTED: {node} PCB net {net}, schematic net {expected.get(node)}")
         raise SystemExit(f"FAIL: {len(missing)} mismatches and {len(unexpected)} unexpected pad assignments")
     print(f"PASS: all {len(expected)} schematic-connected pins match PCB pad nets; {len(actual)} physical pads checked")
+    if candidate_69_open:
+        print("HOLD: J1 contact 69 intentionally NC despite optional JP2 in schematic; NOT RELEASED")
 
 
 if __name__ == "__main__":
