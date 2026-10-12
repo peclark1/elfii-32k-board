@@ -148,7 +148,7 @@
 (in_bom yes) (on_board yes)
 (property "Reference" "RN" (at 0 29.209999999999997 0) (effects (font (size 1.27 1.27))))
 (property "Value" "8x22K PULLDOWN" (at 0 -26.669999999999998 0) (effects (font (size 1.27 1.27))))
-(property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+(property "Footprint" "Resistor_THT:R_Array_SIP9" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
 (symbol "RN8_PULLDOWN_0_1" (rectangle (start -15.24 25.4) (end 15.24 -22.86) (stroke (width 0.254) (type default)) (fill (type background))))
 (symbol "RN8_PULLDOWN_1_1"
 (pin passive line (at 17.78 22.86 180) (length 2.54) (name "COM" (effects (font (size 1.016 1.016)))) (number "1" (effects (font (size 1.016 1.016)))))
