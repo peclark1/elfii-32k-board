@@ -1,0 +1,1 @@
+Hyperboard-derived schematic is being validated before the old-architecture PCB is regenerated. Remove this marker only after the PCB netlist/placement is replaced from the validated schematic.
