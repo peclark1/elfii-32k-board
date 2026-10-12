@@ -1,11 +1,19 @@
-# Current working state — ELF II 32K board
+# Historical A4/A5 working state — SUPERSEDED
+
+> **This is an archived routing checkpoint, not today's engineering status.**
+> The fully routed Hyperboard-derived review PCB is described in
+> [pre-fabrication layout review](prefabrication-layout-review-2026-10-12.md).
+> J1-69 is now wired to JP2-1 and JP2-2 to GND (optional shunt);
+> original Slot-5 RAM disable is settled. J1-82 remains unresolved.
+> The old A4/A5 component names, NC J1-69 claim and routing counts
+> below apply only to those previous experiments.
 
 ## Verified progress
 
 - The A4 schematic groups 74HCT273/62256 pins by function and includes seven direct, visible A8-A14 latch-to-SRAM wires. The MA0-MA7/D0-D7 connections and most control/power hookups still use named net labels. KiCad exported pin/net tests passed once the missing LATCH_CLK label was restored.
 - The PCB has **4,193 real copper track segments** and **36 plated vias** connecting 25 signal nets on two layers. KiCad DRC on this first routing checkpoint, using 0.6mm/0.3mm vias, reported **zero track/via clearance violations**, with 56 remaining unconnected items before zones.
 - The F.Cu and B.Cu PCB GND zones are retained with solid pad connection settings. An earlier zone-filled test (before solid pad conversion) reduced 56 missing connections to 33; the current source must be zone-filled and retested.
-- The original board outline and physical 86-contact connector are retained. Pins 69 and 82 remain unconnected pending original motherboard verification.
+- At this **historical A5 checkpoint**, both J1-69 and J1-82 remained disconnected; on the accepted revised PCB **J1-69 routes to JP2-1**, while J1-82 remains NC.
 - Schema ERC was clean (0 errors / 0 warnings) before the A4 functional redraw; A4 regression pin-net tests pass but a fresh complete ERC is still required on the current exact commit.
 
 ## Failed experiment deliberately rolled back
@@ -19,7 +27,7 @@ The diagnostic PRs #14 and #15, which targeted this abandoned experiment, were c
 - Ten signal nets: D1, D2, D3, D5 and MA1, MA2, MA3, MA5, MA6, MA7.
 - +5V connections; KiCad review/physical fit of the ground zones.
 - Original 2101 motherboard memory conflict and Giant Board ROM/RAM map.
-- Original bus contact 69 electrical behavior and latch/TPA timing on actual hardware.
+- **Historically**, contact 69 was unresolved; since then Slot-5 use established original RAM disable. Latch/TPA timing remains unverified.
 - 86 intentional edge-finger clearance findings, 14 simplified-footprint library mismatches, remaining unconnected items.
 - PCB routing, all-rule DRC, finished visual schematic review and fabrication authorization.
 
@@ -38,7 +46,7 @@ Route remaining ten nets in the GUI or a DRC-aware router instead of assuming a 
 - Most recent safe **post-routing diagnostic check** following the D1 and GND strap rollbacks: GitHub Actions run `38197079143` passed source PCB parse, PDF/netlist, mandatory schematic ERC, actual filled-zone DRC, and **new strict DRC non-regression test**. The test rejects any new shorting, track crossings, copper/mask clearance, or starved-thermal violations.
 - A finer-grid D1 route *did* connect J1-58 to U2-12 electrically but **shorted physical unassigned connector contacts**, and three new GND straps crossed existing traces. These were removed in commit `c7754e2`. Actual unused fingers must be treated as physical obstacles, so **D1 remains unrouted**. The original 10 uncompleted signal nets remain: D1/D2/D3/D5 and MA1/MA2/MA3/MA5/MA6/MA7.
 - The reason a simple router cannot escape D1's front-side edge finger is that previously routed D0/MA4/TPA traces form a barrier near the connector. Meaningful completion requires selective **rip-up/reroute of existing copper**, or an independently DRC-validated advanced router, rather than blindly adding tracks.
-- Existing 86 edge-finger clearance violations and 14 version-mismatch warnings are explicitly **not approved for fabrication**. Motherboard 2101 RAM/Giant Board coexistence, original contact 69/82 details, TPA timing and edge-plating/bevel also remain open.
+- Existing 86 edge-finger clearance violations and 14 version-mismatch warnings are explicitly **not approved for fabrication**. Motherboard 2101 RAM/Giant Board coexistence, historical contact-69 and still-open contact-82 details, TPA timing and edge-plating/bevel also remain open.
 
 **Current status: reviewable intermediate design, not a fabrication candidate.**
 
