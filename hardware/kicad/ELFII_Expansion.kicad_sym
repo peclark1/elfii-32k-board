@@ -89,7 +89,7 @@
       (pin passive line (at -19.05 -25.40 0) (length 3.81) (name "I62" (effects (font (size 1.016 1.016)))) (number "63" (effects (font (size 1.016 1.016)))))
       (pin passive line (at -19.05 -27.94 0) (length 3.81) (name "I61" (effects (font (size 1.016 1.016)))) (number "65" (effects (font (size 1.016 1.016)))))
       (pin passive line (at -19.05 -30.48 0) (length 3.81) (name "I6C" (effects (font (size 1.016 1.016)))) (number "67" (effects (font (size 1.016 1.016)))))
-      (pin passive line (at -19.05 -33.02 0) (length 3.81) (name "GND" (effects (font (size 1.016 1.016)))) (number "69" (effects (font (size 1.016 1.016)))))
+      (pin passive line (at -19.05 -33.02 0) (length 3.81) (name "MEMORY_OFF?" (effects (font (size 1.016 1.016)))) (number "69" (effects (font (size 1.016 1.016)))))
       (pin passive line (at -19.05 -35.56 0) (length 3.81) (name "I6D" (effects (font (size 1.016 1.016)))) (number "71" (effects (font (size 1.016 1.016)))))
       (pin passive line (at -19.05 -38.10 0) (length 3.81) (name "I6E" (effects (font (size 1.016 1.016)))) (number "73" (effects (font (size 1.016 1.016)))))
       (pin passive line (at -19.05 -40.64 0) (length 3.81) (name "I6F" (effects (font (size 1.016 1.016)))) (number "75" (effects (font (size 1.016 1.016)))))
