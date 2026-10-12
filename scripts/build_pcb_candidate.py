@@ -8,13 +8,15 @@ components are removed from the candidate, not carried forward accidentally.
 Pass the KiCad9-exported netlist and a separate output PCB path.
 """
 import sys
+import re
 from pathlib import Path
 
 import pcbnew
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tests"))
-from test_netlist import read_nets, balanced_forms  # noqa: E402
+from test_netlist import read_nets  # noqa: E402
+from test_routed_board_review import forms  # noqa: E402
 
 BOARD = ROOT / "hardware/kicad/elfii-32k-board.kicad_pcb"
 
@@ -84,12 +86,12 @@ def main():
     source = BOARD.read_text(encoding="utf-8")
     stripped = {"segment": 0, "via": 0, "zone": 0, "footprint": 0}
     for kind in ("segment", "via", "zone"):
-        blocks = balanced_forms(source, kind + " ")
+        blocks = list(forms(source, kind))
         stripped[kind] = len(blocks)
         for block in blocks:
             source = source.replace(block, "", 1)
-    for block in balanced_forms(source, "footprint "):
-        if 'fp_text reference "J1"' not in block:
+    for block in list(forms(source, "footprint")):
+        if not re.search(r'\((?:fp_text\s+reference|property\s+"Reference")\s+"J1"', block):
             source = source.replace(block, "", 1)
             stripped["footprint"] += 1
     safe_base = target.parent / "elfii-32k-candidate-blank-base.kicad_pcb"
