@@ -36,6 +36,10 @@ jobs:
         run: python3 tests/test_bus_contact_safety.py
       - name: Compare schematic and PCB pad net assignments
         run: python3 tests/test_pcb_net_assignment.py out/elfii-32k-board.net hardware/kicad/elfii-32k-board.kicad_pcb
+      - name: Test source PCB parser before zone fill
+        run: |
+          mkdir -p out/raw
+          kicad-cli pcb export gerbers -l F.Cu,B.Cu,Edge.Cuts -o out/raw/ hardware/kicad/elfii-32k-board.kicad_pcb
       - name: Fill PCB copper zones into a temporary board
         run: |
           /usr/bin/python3 tests/fill_zones.py hardware/kicad/elfii-32k-board.kicad_pcb hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb
