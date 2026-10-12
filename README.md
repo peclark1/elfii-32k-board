@@ -51,6 +51,19 @@ The `SCHEMATIC_REBUILD_IN_PROGRESS` marker keeps outdated PCB
 consistency/DRC checks from mistakenly accepting the old file as current.
 It is removed only after a genuine schematic-to-PCB synchronization.
 
+## Verified routing milestone — 12 October 2026
+
+The first full two-layer routing pass is now available on the separate
+[fully routed Hyperboard preview branch](https://github.com/peclark1/elfii-32k-board/tree/experiment/hyperboard-route-ceee8d6e):
+**426 tracks, 27 vias, zero unconnected items**.
+
+The [full-project KiCad 9 validation run](https://github.com/peclark1/elfii-32k-board/actions/runs/38270750084)
+reports **zero DRC violations and zero unconnected pads** when run with the
+project-local footprint library and scoped edge-finger rules. The branch is
+an **engineering preview, not a fabrication-ready design**. Do not replace
+`main`'s old PCB until the schematic/PCB contact-69 decision is resolved.
+See the [routing checkpoint](docs/design/hyperboard-routing-checkpoint-2026-10-12.md).
+
 ## Critical safety holds
 
 1. **J1-69:** historically described as an original motherboard-memory
