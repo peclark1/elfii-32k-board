@@ -55,6 +55,9 @@ jobs:
           if [ -f hardware/kicad/elfii-32k-board.kicad_dru ]; then
             cp hardware/kicad/elfii-32k-board.kicad_dru hardware/kicad/elfii-32k-board-ci-filled.kicad_dru
           fi
+          if [ -f hardware/kicad/elfii-32k-board.kicad_pro ]; then
+            cp hardware/kicad/elfii-32k-board.kicad_pro hardware/kicad/elfii-32k-board-ci-filled.kicad_pro
+          fi
       - name: Export Specctra DSN for optional offline Freerouting
         run: |
           /usr/bin/python3 scripts/export_specctra.py hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb out/elfii-32k-board.dsn
