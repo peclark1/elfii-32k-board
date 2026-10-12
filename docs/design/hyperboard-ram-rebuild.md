@@ -19,7 +19,7 @@ Keep the existing verified 86-contact edge connector geometry. Required source c
 - /MWR: P3-24
 - D7..D0: P3-34,38,42,46,50,54,58,62
 - MA7..MA0: P3-36,40,44,48,52,56,60,64
-- optional motherboard-RAM-disable contact: P3-69, **default open and still early-Netronics-unverified**
+- original motherboard-RAM-disable contact: P3-69, **known working on the user's original ELF II with AVI Hyperboard inserted in slot 5**; route to the new card's JP2 jumper rather than leaving the finger NC
 - +5 V / GND from the already documented power contacts.
 
 ### High-address latch — Hyperboard A8, 74HC573
@@ -77,7 +77,21 @@ This is electrically equivalent to the RAM side of Hyperboard J8 without copying
 
 The Hyperboard labels P3-69 `RAM_CE` and ties that connector net to GND. The copper Gerber therefore correctly reports pad 69 as GND.
 
-That connector signal is **not** the Hyperboard SRAM /CS. On this standalone board it is only an optional motherboard-RAM-disable function. Provide a normally-open jumper from P3-69 to GND and retain the existing warning that early-Netronics behavior must be bench verified before use.
+That connector signal is **not** the Hyperboard SRAM /CS.
+
+**Previously established Slot-5 result (user confirmed):** Plugging the AVI
+Hyperboard into the original Netronics ELF II expansion slot 5 disables the
+motherboard's on-board RAM. This matches the period Netronics `MOTHER BD.
+MEMORIES OFF` designation and the source Hyperboard's direct tie of P3-69 to
+GND. Do not keep treating the Slot-5 disable mechanism as an untested theory.
+
+For the standalone SRAM board, **connect P3-69 to JP2-1**, with **JP2-2 to
+GND**. Installing a shunt across JP2 reproduces the Hyperboard's original
+grounding action; removing it leaves P3-69 open. The shunt is needed when
+installing the card in Slot 5 with low-memory SRAM enabled to prevent overlap
+with motherboard RAM. Keep physical/historical caveats for other slots,
+motherboard variants, and Giant Board coexistence distinct from this known
+Slot-5 behavior.
 
 ## Omitted Hyperboard functions
 
@@ -90,7 +104,7 @@ The source A13A 74HC74 belongs to the shared memory/boot block and is not requir
 1. Replace the old custom 74HCT273/XOR/OR schematic with P3 -> 74HC573 -> CY62256.
 2. Add the exact 74LS151 + 8-position 4K page selector.
 3. Add the RAM-only LOW/HIGH half selector and source-derived 4011 inverter.
-4. Add optional P3-69 motherboard-RAM-disable jumper, default open.
+4. Route P3-69 through optional JP2 to GND and ensure both PCB pads are connected; close JP2 when reproducing the proven Hyperboard Slot-5 motherboard RAM inhibit.
 5. Add explicit power, one 0.1uF bypass per IC, local bulk capacitance, and defined unused inputs.
 6. Run real KiCad 9 ERC.
 7. Export a KiCad netlist and enforce the source pin map in automated regression tests.
