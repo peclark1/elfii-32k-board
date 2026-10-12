@@ -1,0 +1,36 @@
+name: KiCad design checks
+
+on:
+  push:
+    branches: [main, "feature/**"]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install KiCad CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y kicad
+          kicad-cli version
+      - name: Verify SRAM selection truth table
+        run: python3 tests/test_ram_select_logic.py
+      - name: Check KiCad schematic ERC
+        run: |
+          mkdir -p out
+          kicad-cli sch erc hardware/kicad/elfii-32k-board.kicad_sch -o out/erc.txt
+          cat out/erc.txt
+      - name: Check KiCad board DRC
+        if: always()
+        run: |
+          mkdir -p out
+          kicad-cli pcb drc hardware/kicad/elfii-32k-board.kicad_pcb -o out/drc.txt
+          cat out/drc.txt
+      - name: Upload diagnostic reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kicad-erc-drc
+          path: out/
