@@ -1,19 +1,21 @@
-# KiCad starter
+# KiCad hardware design — revision A3
 
-- `elfii-32k-board.kicad_pro` — project container.
-- `elfii-32k-board.kicad_sch` — empty schematic page with project title; **no nets or components yet**.
-- PCB file **now exists**, with the full measured Hyperboard Rev 2 outline and the 86-contact connector footprint. Contact numbers 1–86 were extracted from front/back copper-Gerber metadata; schematic nets, SRAM components and tracks have not yet been implemented.
+Open `elfii-32k-board.kicad_pro` in KiCad.
 
-The schematic skeleton was authored as KiCad text format but could not be opened or checked with KiCad CLI in this environment. Please verify that it opens in your installed KiCad before wiring components.
+The schematic now contains the 62256 32 KiB SRAM, 74HCT273 upper-address latch, conventional multi-unit gates for the 74HCT04, 74HCT86 and 74HCT32, two configuration jumpers, two pull-down resistors, and five decoupling capacitors.
 
-The reusable connector symbol and connector footprint are included in project-local KiCad libraries (`ELFII_Expansion.kicad_sym` and `ELFII_Expansion.pretty`). Next, confirm original bus signal assignment and implement the memory schematic described in `docs/design/schematic-plan.md`.
+The board is full-size, using the original-style AVI Hyperboard Rev 2 edge/shoulder geometry with a numbered 86-pad edge-connector footprint. **The PCB has initial through-hole component placement and named pads but is not routed.**
 
-## Current electrical schematic
+Project-local libraries: `ELFII_Expansion.pretty`, `ELFII_Expansion.kicad_sym`, `ELFII_32K.kicad_sym`. The first-pass component footprints in the PCB are simplified through-hole geometries and require replacement/reconciliation against canonical library footprints before manufacturing.
 
-The `.kicad_sch` file now contains an **initial pin-numbered, connected schematic draft**, built around a 74HCT273, 62256, 74HCT04, 74HCT86, 74HCT32, power bypassing and configuration jumpers. Two units of P3 represent the 86-contact bus.
+## Current validation
 
-The project-local `ELFII_32K.kicad_sym` and `ELFII_Expansion.kicad_sym` libraries are registered in `sym-lib-table`.
+- Actual KiCad 9 schematic **ERC: zero errors and zero warnings** (run 38192326858).
+- Netlist export, required pin connections, schematic-to-PCB pad mapping, original edge-contact safety checks, 32-case logic tests and 50-mil schematic grid alignment passed.
+- KiCad PDF export and PCB Gerber *parse/export* succeeded; exports are **not fabrication files**.
+- PCB **DRC: 100 findings, plus 87 unconnected items** because the board remains unrouted. 86 DRC findings concern intentional finger-to-board-edge clearance; 14 concern library-footprint mismatch.
+- Timing, motherboard RAM collision, Giant Board memory map, edge gold/bevel and actual early-board contact 69/82 usage **have not been electrically verified**.
 
-This environment has **no KiCad CLI**, so the committed sheet is syntax/structure checked but has **not been opened in Eeschema or run through ERC**. Some generic symbols are project-specific instead of stock KiCad library symbols. Confirm pin placements, labels, footprints and electrical types in the graphical editor before design release.
+Review [ERC cleanup results](../../docs/design/erc-cleanup-a3.md), [gate-symbol connections](../../docs/design/gate-symbols-a3.md), and [bench measurements](../../docs/design/early-elfii-bus-bench-validation.md).
 
-The PCB currently holds the outline and edge connector only; component placement/routing is NOT done.
+**Do not manufacture or insert this card yet.**
