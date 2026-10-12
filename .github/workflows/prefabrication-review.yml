@@ -38,6 +38,10 @@ jobs:
           /usr/bin/python3 tests/fill_zones.py \
             hardware/kicad/elfii-32k-board.kicad_pcb \
             hardware/kicad/elfii-32k-prefab-filled.kicad_pcb
+          # KiCad resolves a custom .kicad_dru by the candidate PCB basename.
+          # Without this copy its 86 intentional J1 edge clearances are NOT scoped.
+          cp hardware/kicad/elfii-32k-board.kicad_dru \
+            hardware/kicad/elfii-32k-prefab-filled.kicad_dru
       - name: Strict project-local KiCad 9 DRC (filled copper)
         run: |
           set +e
