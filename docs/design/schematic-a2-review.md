@@ -1,5 +1,13 @@
 # Schematic review — Rev A2
 
+> **Historical A2/A3 checkpoint, superseded on 2026-10-12:** The accepted
+> Hyperboard-derived PCB physically routes **J1-69 to JP2-1**, with JP2-2
+> to GND and the shunt normally open. The original Slot-5 motherboard
+> RAM-disable action is established evidence. **J1-82 remains NC/unresolved**.
+> Statements below describing J1-69 as disconnected or unverified apply
+> only to the older experiment, not the revised PCB.
+
+
 This review records what is verified and what still needs confirmation before routing.
 
 ## Confirmed from the owner's early Netronics ELF II assembly manual
