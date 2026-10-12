@@ -3,7 +3,7 @@
 (generator "eeschema")
 (uuid "89d8d6a8-e087-4cc0-b51a-852515026bd4")
 (paper "A2")
-(title_block (title "Netronics ELF II 32K Static RAM Expansion") (date "2026-10-12") (rev "B6 - CMOS page mapper") (company "Community restoration project") (comment 1 "Historical bus interface; NOT validated/fabrication-ready"))
+(title_block (title "Netronics ELF II 32K Static RAM Expansion") (date "2026-10-12") (rev "B7 - electrical verified; PCB in progress") (company "Community restoration project") (comment 1 "Historical bus interface; NOT validated/fabrication-ready"))
 (lib_symbols
 (symbol "ELFII_Expansion:ELFII_P3"
     (pin_names (offset 0.254))
@@ -435,7 +435,7 @@
 (uuid "b6aa0000-0000-4000-8000-000000000015")
 (property "Reference" "C5" (at 469.9 147.32000000000002 0) (effects (font (size 1.27 1.27))))
 (property "Value" "10u" (at 469.9 167.64000000000001 0) (effects (font (size 1.27 1.27))))
-(property "Footprint" "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" (at 469.9 157.48000000000002 0) (effects (font (size 1.27 1.27)) hide))
+(property "Footprint" "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm" (at 469.9 157.48000000000002 0) (effects (font (size 1.27 1.27)) hide))
 (instances (project "elfii-32k-board" (path "/89d8d6a8-e087-4cc0-b51a-852515026bd4" (reference "C5") (unit 1))))
 )
 (text "HYPERBOARD-DERIVED ELECTRICAL REBUILD - NOT FABRICATION READY" (at 152.4 25.4 0) (effects (font (size 1.5 1.5)) (justify left)) (uuid "d8cc0000-0000-4000-8000-000000000001"))
