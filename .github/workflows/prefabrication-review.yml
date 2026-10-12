@@ -26,6 +26,8 @@ jobs:
           python3 tests/test_mechanical_geometry.py
           python3 tests/test_bus_contact_safety.py
           python3 tests/test_routed_board_review.py
+          python3 tests/test_power_pad_zone_overrides.py
+          python3 tests/test_track_quality.py
       - name: Schematic export/ERC and complete PCB pad netlist verification
         run: |
           mkdir -p out/prefab
