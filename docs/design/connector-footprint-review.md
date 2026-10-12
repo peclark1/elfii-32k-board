@@ -14,13 +14,13 @@ The board includes `ELFII_Expansion:ELFII_Edge_86_Rev2_Unverified` at the geomet
 - The same coordinates are assigned on front and back copper/mask layers.
 
 ## IMPORTANT validation flags
-- Pads use provisional text IDs `F01...F43` and `B01...B43`. These **are not the original bus pin numbers** and are not safe to use in electrical schematics.
-- Footprint rectangles reflect mask openings. Recheck actual copper pad size, end clearance, side clearances, copper layer, paste absence, and solder mask data, and compare to the Gerber copper.
+- Pads now carry **actual Hyperboard P3 connector numbers `1`–`86`**, recovered from X2 copper-Gerber attributes. Those numbers must still be independently cross-checked against the early original Netronics ELF II bus.
+- The front/back **copper** Gerber aperture D19 matches the mask rectangles (1.397 × 8.890 mm). Still verify edge clearance, no paste, mask expansion, and plating/bevel with the fabricator.
 - Check exact original connector numbering and component vs solder side against the original Netronics schematic.
 - Confirm board-outline fit and edge chamfer/bevel requirements with a physical template.
 - Surface finish and card edge plating remain unspecified in the supplied files. Obtain fab house edge-connector finish/process guidance.
 - Review physical orientation for accidental face reversal.
-- This board has **no routing, electrical nets, SRAM, or logic components yet**.
+- This board has **no routing, electrical nets, SRAM, or logic components yet**. A two-unit 86-pin schematic connector symbol now exists in the project-local symbol library; it is not yet placed in the schematic.
 - KiCad CLI is not installed in the current runtime; no ERC/DRC has been run.
 
 ## Next electrical stage
