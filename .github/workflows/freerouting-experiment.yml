@@ -3,6 +3,9 @@ name: Freerouting trial (no repository modification)
 on:
   push:
     branches: ["experiment/freerouting-*"]
+  pull_request:
+    paths:
+      - "docs/experiments/freerouting-2.5-trial.md"
   workflow_dispatch:
 
 permissions:
