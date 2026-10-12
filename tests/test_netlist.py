@@ -52,7 +52,7 @@ def read_nets(path: Path):
         if not name_match:
             continue
         nodes = set(re.findall(r'\(node\s+\(ref "([^"]+)"\)\s+\(pin "([^"]+)"\)', net))
-        result[name_match.group(1)] = nodes
+        result[name_match.group(1).lstrip("/")] = nodes
     if not result:
         raise ValueError("No KiCad nets found; netlist layout or format differs")
     return result
