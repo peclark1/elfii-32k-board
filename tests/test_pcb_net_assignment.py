@@ -35,33 +35,31 @@ def board_pads(path):
 
 
 def main():
-    if len(sys.argv) not in (3, 4) or (
-        len(sys.argv) == 4 and sys.argv[3] != "--candidate-contact-69-open"
-    ):
+    if len(sys.argv) != 3:
         raise SystemExit(
-            "usage: test_pcb_net_assignment.py export.net board.kicad_pcb "
-            "[--candidate-contact-69-open]"
+            "usage: test_pcb_net_assignment.py export.net board.kicad_pcb"
         )
-    candidate_69_open = len(sys.argv) == 4
+
     expected = {}
     for name, nodes in read_nets(Path(sys.argv[1])).items():
-        # KiCad invents pseudo-nets for intentionally unconnected symbol pins.
-        # They have no physical copper net and must not be copied onto PCB pads.
         if name.startswith("unconnected-"):
             continue
         for node in nodes:
-            # The user's ORIGINAL early-Netronics contact 69 is an explicit
-            # unresolved safety exception on the exploratory PCB ONLY.
-            # The schematic's optional JP2 circuit is not yet routed to it.
-            if candidate_69_open and node == ("J1", "69"):
-                continue
             if node in expected and expected[node] != name:
                 raise ValueError(f"Schematic pin {node} on multiple nets")
             expected[node] = name
 
     actual = board_pads(Path(sys.argv[2]))
-    if candidate_69_open and actual.get(("J1", "69")) is not None:
-        raise SystemExit("FAIL: early Netronics J1 contact 69 must remain NC on candidate")
+    # Slot-5 known-working Hyperboard behavior: J1-69 is an original RAM
+    # inhibit input. It must reach JP2-1, not be directly grounded or NC.
+    if expected.get(("J1", "69")) != "MB_RAM_DISABLE" or expected.get(("JP2", "1")) != "MB_RAM_DISABLE":
+        raise SystemExit("FAIL: schematic J1-69 / JP2-1 must share MB_RAM_DISABLE")
+    if actual.get(("J1", "69")) != "MB_RAM_DISABLE":
+        raise SystemExit("FAIL: PCB J1-69 must be on MB_RAM_DISABLE, not open or GND")
+    if actual.get(("JP2", "2")) != "GND":
+        raise SystemExit("FAIL: PCB JP2-2 must connect to GND")
+    if actual.get(("J1", "82")) is not None:
+        raise SystemExit("FAIL: unverified J1-82 must remain NC")
 
     missing = sorted((node, net) for node, net in expected.items() if actual.get(node) != net)
     unexpected = sorted((node, net) for node, net in actual.items() if net is not None and expected.get(node) != net)
@@ -72,8 +70,7 @@ def main():
             print(f"UNEXPECTED: {node} PCB net {net}, schematic net {expected.get(node)}")
         raise SystemExit(f"FAIL: {len(missing)} mismatches and {len(unexpected)} unexpected pad assignments")
     print(f"PASS: all {len(expected)} schematic-connected pins match PCB pad nets; {len(actual)} physical pads checked")
-    if candidate_69_open:
-        print("HOLD: J1 contact 69 intentionally NC despite optional JP2 in schematic; NOT RELEASED")
+    print("PASS: J1-69 -> JP2-1 is selectively shunted to GND via JP2-2; J1-82 remains NC")
 
 
 if __name__ == "__main__":
