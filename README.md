@@ -71,6 +71,8 @@ The initial 426-track/27-via trial was superseded by the coordinator-accepted [r
 - [New electrical architecture](docs/design/hyperboard-ram-rebuild.md)
 - [74LS151 input-margin review](docs/design/page-select-ttl-input-margin.md)
 - [Early ELF II bus bench verification](docs/design/early-elfii-bus-bench-validation.md)
+- [Card-edge CAM and fabrication hold](docs/design/card-edge-cam-manufacturing-review-2026-10-12.md)
+- [Power feed and bypass copper measurements](docs/design/prefab-power-and-decoupling-measurements-2026-10-12.md)
 - [KiCad project instructions](hardware/kicad/README.md)
 - [Original ELF II period sources](docs/reference/source-notes.md)
 
