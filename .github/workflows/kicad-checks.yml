@@ -68,6 +68,8 @@ jobs:
         run: |
           kicad-cli pcb drc hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb -o out/drc.txt || true
           cat out/drc.txt
+      - name: Fail on introduced PCB shorts and clearance errors
+        run: python3 tests/check_drc_categories.py out/drc.txt
       - name: Explain outstanding electrical validation
         run: |
           echo "Schematic ERC is now enforced. PCB DRC remains diagnostic while intentionally unrouted."
