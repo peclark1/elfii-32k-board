@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "ELFII_Expansion")(type "KiCad")(uri "${KIPRJMOD}/ELFII_Expansion.kicad_sym")(options "")(descr "Original ELF II expansion bus schematic symbols"))
+)
