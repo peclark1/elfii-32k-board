@@ -10,27 +10,28 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - name: Install KiCad CLI
+      - name: Install KiCad 7 CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y kicad
           kicad-cli version
       - name: Verify SRAM selection truth table
         run: python3 tests/test_ram_select_logic.py
-      - name: Check KiCad schematic ERC
+      - name: KiCad schematic import / netlist export
         run: |
           mkdir -p out
-          kicad-cli sch erc hardware/kicad/elfii-32k-board.kicad_sch -o out/erc.txt
-          cat out/erc.txt
-      - name: Check KiCad board DRC
-        if: always()
+          kicad-cli sch export netlist -o out/elfii-32k-board.net hardware/kicad/elfii-32k-board.kicad_sch
+      - name: KiCad PCB import / Gerber export
         run: |
-          mkdir -p out
-          kicad-cli pcb drc hardware/kicad/elfii-32k-board.kicad_pcb -o out/drc.txt
-          cat out/drc.txt
-      - name: Upload diagnostic reports
+          mkdir -p out/gerbers
+          kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Mask,B.Mask,Edge.Cuts -o out/gerbers/ hardware/kicad/elfii-32k-board.kicad_pcb
+      - name: Explain remaining manual verification
+        run: |
+          echo "KiCad 7.0.11 CLI does not expose sch erc / pcb drc."
+          echo "Successful netlist / Gerber export is a parsing check, NOT ERC/DRC or fabrication validation."
+      - name: Upload generated netlist and Gerbers
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: kicad-erc-drc
+          name: kicad-import-exports
           path: out/
