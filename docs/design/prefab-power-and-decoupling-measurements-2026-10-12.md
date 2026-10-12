@@ -106,3 +106,34 @@ C5 is bulk decoupling/storage, **not** a substitute for C1–C4.
 **Release status: routed engineering checkpoint, not approved to make, order,
 merge, or install.** See the independent full-board KiCad 9 filled-copper
 workflow, not only the unrouted placement-candidate report.
+
+
+## Independent filled-copper SVG visual inspection
+
+The independent KiCad CI artifact `elfii-prefab-review-evidence`
+contains SVGs rendered from the actual **zone-filled PCB** for
+F.Cu, B.Cu, F.SilkS, and Edge.Cuts (review sample: successful run
+38276341833). Inspection found:
+
+- Both ground-filled faces cover the main board body but intentionally
+  stop just above the row of exposed connector fingers; there is no
+  flooded copper over the insertion tongue.
+- The front face has an extensive GND region surrounding the upper
+  IC/data traces. Long parallel data/address breakout paths create
+  several local voids without a DRC connectivity violation.
+- The back face contains **long narrow interruptions/channels** in its
+  ground fill as signals fan out from the edge connector to the ICs.
+  Native DRC reports zero unconnected pads and no short/clearance
+  violations, but visual continuity alone does not establish
+  low-inductance return geometry. Check this with real switching
+  waveforms before changing copper.
+- F.SilkS remains plainly marked **“PINOUT UNVERIFIED – DO NOT FAB”**,
+  preserving the manufacturing safety hold.
+- The review views are not sufficient to validate installed card-cage
+  clearance, component height, edge bevel, hard-gold plating or solder
+  behavior at the two selective solid GND pad ties.
+
+The SVG inspection **found no additional demonstrated KiCad electrical
+defect requiring rerouting**. Do not infer that an all-green native
+DRC implies signal integrity, manufacturing authorization or safe
+installation.
