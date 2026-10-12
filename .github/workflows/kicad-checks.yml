@@ -21,6 +21,8 @@ jobs:
         run: |
           mkdir -p out
           kicad-cli sch export netlist -o out/elfii-32k-board.net hardware/kicad/elfii-32k-board.kicad_sch
+      - name: Verify exported KiCad pin/net assignments
+        run: python3 tests/test_netlist.py out/elfii-32k-board.net
       - name: KiCad PCB import / Gerber export
         run: |
           mkdir -p out/gerbers
