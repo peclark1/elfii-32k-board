@@ -11,6 +11,18 @@ from test_pcb_net_assignment import board_pads
 def main():
     board = Path("hardware/kicad/elfii-32k-board.kicad_pcb")
     nets = board_pads(board)
+    # The period Netronics 4K memory board explicitly calls contact 69
+    # "MOTHER BD. MEMORIES OFF"; do not quietly revert to a GND pin label.
+    symbol_lib = Path("hardware/kicad/ELFII_Expansion.kicad_sym").read_text()
+    embedded_schematic = Path("hardware/kicad/elfii-32k-board.kicad_sch").read_text()
+    for source, body in (("library", symbol_lib), ("schematic", embedded_schematic)):
+        import re
+        matches = re.findall(
+            r'\(name "([^"]+)"[^\n]*\(number "69"', body
+        )
+        assert matches == ["MEMORY_OFF?"], (
+            f"{source} pin 69 must be labeled MEMORY_OFF? (period Netronics reference): {matches}"
+        )
     for pad in ("69", "82"):
         assert nets[("J1", pad)] is None, f"J1 pad {pad} has unresolved function, must stay NC"
     for pad in ("5", "80"):
