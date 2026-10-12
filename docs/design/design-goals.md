@@ -11,7 +11,8 @@
 
 ## Mechanical and historical goals
 - Period-inspired green PCB, white silkscreen, edge fingers, DIP components and restrained legend.
-- Verify actual edge pitch, connector pin numbering, insertion depth, dimensions and component clearances from original boards BEFORE PCB layout.
+- **Decision (2026-10-11): retain the full Hyperboard Rev 2 PCB outline** (nominal 177.8 mm × 127.127 mm), including connector tongue and shoulders, rather than shortening the card after placement. This is our period-style mechanical baseline; an original 16K board's exact dimensions remain to be independently verified.
+- Reuse the measured Hyperboard Rev 2 edge geometry, and verify connector pin numbering, insertion depth, and component clearances against the original ELF II hardware BEFORE fabrication.
 - No modifications to motherboard unless a separately documented, reversible RAM isolation option proves necessary.
 
 ## Verification gates
