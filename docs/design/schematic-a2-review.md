@@ -9,7 +9,8 @@ The page labelled **ELF II BUS DEFINITION — connector viewed from component si
 | Board contact | Original signal legend | Our schematic label |
 | ---: | --- | --- |
 | 1, 2 | +5 | VCC |
-| 5, 69, 80 | GND (69 from period connector drawing's common rail) | GND |
+| 5, 80 | GND | GND |
+| 69 | Not independently verified from this manual illustration | GND (Hyperboard Gerber label; needs cross-check) |
 | 24 | MWR | NMWR |
 | 28 | TPA | TPA |
 | 30 | MREAD | NMRD |
