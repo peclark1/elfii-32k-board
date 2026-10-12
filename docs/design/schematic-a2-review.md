@@ -10,7 +10,7 @@ The page labelled **ELF II BUS DEFINITION — connector viewed from component si
 | ---: | --- | --- |
 | 1, 2 | +5 | VCC |
 | 5, 80 | GND | GND |
-| 69 | Not independently verified from this manual illustration | GND (Hyperboard Gerber label; needs cross-check) |
+| 69 | Not positively identified as GND in original illustration; handwritten notes appear to refer to a user/I/O contact nearby | **NC in Rev A2**, despite Hyperboard Gerber labelling it GND |\n| 82 | Shares a drawn connection with pin 80 on the original manual (appears to be GND), while Hyperboard Gerber calls it unassigned | **NC in Rev A2** pending bench continuity verification |
 | 24 | MWR | NMWR |
 | 28 | TPA | TPA |
 | 30 | MREAD | NMRD |
@@ -32,7 +32,7 @@ The external-bus connector illustration must not be mistaken for the IC itself. 
 ## Schematic presentation changes
 
 - Net labels on left-facing IC and connector pins now align outward rather than over the device body.
-- 62 deliberately unused edge-connector pins have been marked with KiCad no-connect symbols (the other 24 pins are wired in the draft).
+- 63 deliberately unused or disputed edge-connector pins are marked with KiCad no-connect symbols (the other 23 pins are wired in the draft).
 - There are no functional changes to the SRAM /CE, /OE, /WE logic in this step.
 - KiCad CI now exports an actual schematic PDF into the workflow artifact for an easier human review.
 
@@ -46,3 +46,7 @@ The external-bus connector illustration must not be mistaken for the IC itself. 
 - Verify the sockets, Giant Board, and onboard 2101 RAM configuration before applying power.
 
 Do **not** order from the CI-generated Gerbers. They are for import/export verification only.
+
+## Safety-related clarification: contact 69 and contact 82
+
+The comparison uncovered a **real conflict** between the Hyperboard Gerber net labels and the owner-supplied manual: Hyperboard's pad 69 appears to be tied to GND, but the original bus reference does not independently support declaring it ground; meanwhile the original bus drawing appears to strap 80 and 82, although Hyperboard treats 82 as unassigned. This revision deliberately **disconnects J1-69 from GND** and leaves J1-82 unused. Ground return remains on manual-confirmed pads J1-5 and J1-80. Verify with an ohmmeter on the unpowered original motherboard and Giant Board assembly before assigning either disputed contact.
