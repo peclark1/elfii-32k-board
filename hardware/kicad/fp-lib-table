@@ -1,3 +1,4 @@
 (fp_lib_table
   (lib (name "ELFII_Expansion")(type "KiCad")(uri "${KIPRJMOD}/ELFII_Expansion.pretty")(options "")(descr "Project-local Netronics ELF II mechanical footprints"))
+  (lib (name "ELFII_32K")(type "KiCad")(uri "${KIPRJMOD}/ELFII_32K.pretty")(options "")(descr "Project-local verified ELF II 32K component footprints"))
 )
