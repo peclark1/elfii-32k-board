@@ -1,0 +1,15 @@
+(kicad_sch (version 20230121) (generator "eeschema")
+  (uuid "89d8d6a8-e087-4cc0-b51a-852515026bd4")
+  (paper "A4")
+  (title_block
+    (title "Netronics ELF II 32K SRAM Expansion")
+    (date "2026-10-11")
+    (rev "A0 - unconnected starter")
+    (company "Community restoration project")
+    (comment 1 "Electrical connections pending 86-contact bus verification")
+  )
+  (lib_symbols)
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)
