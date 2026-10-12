@@ -64,13 +64,25 @@ an **engineering preview, not a fabrication-ready design**. Do not replace
 `main`'s old PCB until the schematic/PCB contact-69 decision is resolved.
 See the [routing checkpoint](docs/design/hyperboard-routing-checkpoint-2026-10-12.md).
 
+## Slot-5 contact-69 routing correction
+
+The original zero-airwire preview `experiment/hyperboard-route-ceee8d6e`
+is superseded: it left physical edge contact 69 disconnected. The updated
+[Slot-5 jumper-routed preview](https://github.com/peclark1/elfii-32k-board/tree/experiment/hyperboard-route-b57bb49a)
+places contact 69 on the `MB_RAM_DISABLE` net with `JP2-1`, allowing
+`JP2-2` to connect it to GND through a removable shunt. This implements
+the user's known-working Hyperboard Slot-5 motherboard-RAM inhibit.
+The schematic/PCB regression tests require this connection.
+
 ## Critical safety holds
 
-1. **J1-69:** historically described as an original motherboard-memory
-   disable signal; it is intentionally physically NC in candidate PCBs,
-   even though the schematic documents an optional jumper. Its behavior
-   on the user's early ELF II revision requires measurement first.
-   **J1-82** also remains NC.
+1. **J1-69 / Slot 5:** previous project work established that the
+   Hyperboard disables the original ELF II motherboard RAM when installed
+   in slot 5. Its original contact 69 is grounded. The new SRAM board
+   routes J1-69 to JP2-1 and JP2-2 to GND; **close JP2** to reproduce
+   that known-working behavior. The revised routed preview is
+   [`experiment/hyperboard-route-b57bb49a`](https://github.com/peclark1/elfii-32k-board/tree/experiment/hyperboard-route-b57bb49a).
+   J1-82 remains NC; other expansion configurations are not assumed equivalent.
 2. Verify collisions and memory mapping against onboard 2101 RAM,
    Giant Board and any other memory devices.
 3. Check 1802 TPA/address, /CS, /OE and /WE timing and bus contention on
