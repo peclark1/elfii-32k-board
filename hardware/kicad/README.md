@@ -1,21 +1,53 @@
-# KiCad hardware design — revision A3
+# ELF II 32K SRAM KiCad design — Hyperboard-derived revision
 
-Open `elfii-32k-board.kicad_pro` in KiCad.
+**Work in progress; not a fabrication or installation release.**
 
-The schematic now contains the 62256 32 KiB SRAM, 74HCT273 upper-address latch, conventional multi-unit gates for the 74HCT04, 74HCT86 and 74HCT32, two configuration jumpers, two pull-down resistors, and five decoupling capacitors.
+## Current source files
 
-The board is full-size, using the original-style AVI Hyperboard Rev 2 edge/shoulder geometry with a numbered 86-pad edge-connector footprint. **The PCB has initial through-hole component placement and named pads but is not routed.**
+- `elfii-32k-board.kicad_sch`: active electrical design, rebuilt from the
+  AVI Hyperboard Rev 2 SRAM/address/page-select circuit.
+- `ELFII_32K.kicad_sym`: project-specific schematic symbols.
+- `elfii-32k-board.kicad_pcb`: **previous A5 copper routing study**.
+  Its track netlist is from the obsolete custom 74HCT273/XOR/OR circuit.
+  **Do not assume that this PCB matches the current schematic.**
+- `ELFII_Expansion.pretty` and `ELFII_Expansion.kicad_sym`: the
+  measured genuine full-size two-sided 86-contact ELF II card edge,
+  preserved unchanged.
+- `SCHEMATIC_REBUILD_IN_PROGRESS`: intentional protection against
+  using the old PCB as though its pads/traces matched the new schematic.
 
-Project-local libraries: `ELFII_Expansion.pretty`, `ELFII_Expansion.kicad_sym`, `ELFII_32K.kicad_sym`. The first-pass component footprints in the PCB are simplified through-hole geometries and require replacement/reconciliation against canonical library footprints before manufacturing.
+## New PCB placement and routing workflow
 
-## Current validation
+The `KiCad design checks` GitHub Action exports the current schematic
+netlist and invokes `scripts/build_pcb_candidate.py` to generate a
+**new, separate through-hole PCB candidate**. The generator retains the
+original connector and board outline but replaces all old-architecture
+parts, traces and vias. It tests the source-to-pad pin map and runs actual
+KiCad 9 DRC. The new design has U1 74HC573, U2 62256, U3 74HC151,
+U4 CD4011, an eight-way page DIP, jumpers and bypass capacitors.
 
-- Actual KiCad 9 schematic **ERC: zero errors and zero warnings** (run 38192326858).
-- Netlist export, required pin connections, schematic-to-PCB pad mapping, original edge-contact safety checks, 32-case logic tests and 50-mil schematic grid alignment passed.
-- KiCad PDF export and PCB Gerber *parse/export* succeeded; exports are **not fabrication files**.
-- PCB **DRC: 100 findings, plus 87 unconnected items** because the board remains unrouted. 86 DRC findings concern intentional finger-to-board-edge clearance; 14 concern library-footprint mismatch.
-- Timing, motherboard RAM collision, Giant Board memory map, edge gold/bevel and actual early-board contact 69/82 usage **have not been electrically verified**.
+The `Hyperboard SRAM routing trial (preview only)` Action additionally
+exports this *new* candidate to Specctra DSN, attempts Freerouting 2.5,
+imports any produced session into a **separate** KiCad PCB, reruns pin
+and mechanical checks, compares native DRC findings and uploads front/back
+SVGs and all evidence as an Action artifact. It does not overwrite source
+copper. Download the latest `hyperboard-route-preview` artifact
+from the corresponding GitHub Actions run.
 
-Review [ERC cleanup results](../../docs/design/erc-cleanup-a3.md), [gate-symbol connections](../../docs/design/gate-symbols-a3.md), and [bench measurements](../../docs/design/early-elfii-bus-bench-validation.md).
+## Electrical safety and release holds
 
-**Do not manufacture or insert this card yet.**
+- Source schematic can pass ERC and strict memory pin/net tests without
+  proving 1802 timing or compatibility with original onboard 2101 RAM.
+- Physical connector **J1-69 remains NC on generated routing candidates**,
+  deliberately differing from the optional disable-jumper schematic until
+  early-original-Netronics behavior is bench verified. J1-82 remains NC.
+- The card-edge copper-to-outline findings are intentional but must be
+  resolved with board manufacturing requirements (plating, bevel and
+  mating-contact geometry), not silently waived for fabrication.
+- A routed board still requires source/schematic reconciliation, zero
+  unexplained DRC violations, visual layout review, bench validation, and
+  a deliberate fabrication signoff.
+
+See `docs/design/hyperboard-ram-rebuild.md`,
+`docs/design/hyperboard-ram-circuit-trace.md` and
+`docs/design/page-select-ttl-input-margin.md` for electrical provenance.
