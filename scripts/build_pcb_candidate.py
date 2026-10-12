@@ -44,7 +44,7 @@ PARTS = {
     "C1": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 94.0, 69.0),
     "C2": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 142.0, 69.0),
     "C3": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 173.0, 73.0),
-    "C4": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 199.0, 74.0),
+    "C4": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 199.0, 65.0),
     "C5": ("Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", "10u POLARIZED PIN1=+5V", 199.0, 48.0),
 }
 
