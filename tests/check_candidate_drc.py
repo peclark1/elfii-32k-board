@@ -29,7 +29,7 @@ for issue in issues:
         if kind == "copper_edge_clearance" and "of J1 " not in issue:
             problems.setdefault(kind, []).append("Edge clearance outside verified connector J1")
     else:
-        problems.setdefault(kind, []).append(issue.splitlines()[0])
+        problems.setdefault(kind, []).append(" | ".join(issue.splitlines()[:5]))
 if counts["copper_edge_clearance"] > 87:
     problems.setdefault("copper_edge_clearance", []).append("More than 87 historical J1 finger edge warnings")
 if counts["unconnected_items"] > 120:
