@@ -42,7 +42,7 @@ PARTS = {
     "C2": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 145.0, 108.0),
     "C3": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 174.0, 96.0),
     "C4": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 175.0, 104.0),
-    "C5": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "10u REVIEW FOOTPRINT", 199.0, 48.0),
+    "C5": ("Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", "10u POLARIZED PIN1=+5V", 199.0, 48.0),
 }
 
 # Physical edge-contact 69 is disputed on the EARLY Netronics motherboard.
@@ -151,7 +151,7 @@ def main():
     print(f"Candidate: {target} ({target.stat().st_size} bytes)")
     print(f"Footprints: {len(list(board.GetFootprints()))}; tracks: {len(list(board.GetTracks()))}")
     print(f"Schematic pin memberships assigned: {len(connected)}")
-    print("J1 contact 69 RESERVED NC. C5 footprint and finger fabrication STILL UNVERIFIED.")
+    print("J1 contact 69 RESERVED NC. C5 radial pin1 polarity must be inspected; finger fabrication STILL UNVERIFIED.")
     print("UNROUTED PLACEMENT STUDY ONLY. DO NOT FABRICATE.")
 
 
