@@ -76,7 +76,7 @@ def collect_board(source):
             location = (round(fx + px*cos(theta) + py*sin(theta), 4),
                         round(fy - px*sin(theta) + py*cos(theta), 4))
             plated = bool(re.match(r'^\(pad "[^"]+" thru_hole', pad))
-            layer = "B.Cu" if '("B.Cu" "B.Mask")' in pad else "F.Cu"
+            layer = "B.Cu" if '(layers "B.Cu" "B.Mask")' in pad else "F.Cu"
             if plated:
                 add_edge(graph, point_key(location, "F.Cu"),
                          point_key(location, "B.Cu"), 0.0)
