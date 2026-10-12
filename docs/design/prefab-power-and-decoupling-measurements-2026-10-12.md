@@ -45,6 +45,26 @@ an assurance of supply integrity. The long, narrow supply routing
 therefore **remains a supply current/voltage/transient review hold** pending
 device-current budget and operating scope measurements.
 
+### SRAM-only datasheet sanity check (not a board current budget)
+
+The Cypress CY62256 datasheet lists **28 mA typical, 55 mA maximum**
+operating supply current for the original non-L **CY62256-70**, at the
+specified high-frequency test condition and no output load. The exact fitted
+SRAM variant and any substitutes must be independently verified.
+
+For scale only, a uniform 153 mm long, 0.20 mm wide, 35 µm thick copper
+trace has a calculated room-temperature resistance of approximately
+**0.376 ohm**. At **55 mA** SRAM-only DC current, that length would drop
+approximately **21 mV**. This is *not* a maximum system voltage drop:
+other CMOS logic, all eight possible SW1/22k pull-downs (up to ~1.82 mA
+at 5V), shared segment currents, ground returns, via/contact resistance,
+temperature, and switching transients have not been fully budgeted.
+The physical route to U2 is **104.2 mm**, not 153 mm. No claim about
+load-dependent IC supply voltage or high-frequency return path is made.
+
+Datasheet: https://media.digikey.com/pdf/data%20sheets/cypress%20pdfs/cy62256%20%28jul05%29.pdf
+
+
 ## Local 100 nF decoupler feed geometry
 
 | Capacitor | IC VCC | Actual +5V copper path | Physical assessment |
