@@ -40,11 +40,17 @@ jobs:
             hardware/kicad/elfii-32k-prefab-filled.kicad_pcb
       - name: Strict project-local KiCad 9 DRC (filled copper)
         run: |
+          set +e
           kicad-cli pcb drc --exit-code-violations \
             -o out/prefab/drc-filled.txt \
             hardware/kicad/elfii-32k-prefab-filled.kicad_pcb
-          cat out/prefab/drc-filled.txt
+          status=$?
+          set -e
+          echo "Native filled-board DRC exit: $status"
+          grep -E '^\[[a-z_]+\]:' out/prefab/drc-filled.txt | sort | uniq -c || true
+          sed -n '1,170p' out/prefab/drc-filled.txt
           python3 tests/check_candidate_drc.py out/prefab/drc-filled.txt
+          test "$status" -eq 0
       - name: Render both routed copper sides for further layout review
         run: |
           mkdir -p out/prefab/svg
