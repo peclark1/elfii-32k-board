@@ -1,5 +1,13 @@
 # ERC cleanup — Rev A3
 
+> **Historical A2/A3 checkpoint, superseded on 2026-10-12:** The accepted
+> Hyperboard-derived PCB physically routes **J1-69 to JP2-1**, with JP2-2
+> to GND and the shunt normally open. The original Slot-5 motherboard
+> RAM-disable action is established evidence. **J1-82 remains NC/unresolved**.
+> Statements below describing J1-69 as disconnected or unverified apply
+> only to the older experiment, not the revised PCB.
+
+
 ## Baseline: first actual KiCad 9 rule check
 
 GitHub Actions run `38192151661` used KiCad 9 to check the Rev A3 schematic and unrouted board:
