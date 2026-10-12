@@ -29,19 +29,19 @@ PARTS = {
         "Button_Switch_THT:SW_DIP_SPSTx08_Slide_9.78x22.5mm_W7.62mm_P2.54mm",
         "RAM_PAGE_ENABLE", 157.0, 111.0,
     ),
-    "RN1": ("Resistor_THT:R_Array_SIP9", "8x22K", 188.0, 113.0),
+    "RN1": ("Resistor_THT:R_Array_SIP9", "8x22K", 180.0, 124.0),
     "JP1": (
         "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical",
-        "RAM_HALF", 190.0, 92.0,
+        "RAM_HALF", 197.0, 98.0,
     ),
     "JP2": (
         "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
         "MEM_DISABLE_UNVERIFIED", 190.0, 103.0,
     ),
-    "C1": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 86.0, 94.0),
-    "C2": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 126.0, 104.0),
-    "C3": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 160.0, 93.0),
-    "C4": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 185.0, 86.0),
+    "C1": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 98.0, 99.0),
+    "C2": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 145.0, 108.0),
+    "C3": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 174.0, 96.0),
+    "C4": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 175.0, 104.0),
     "C5": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "10u REVIEW FOOTPRINT", 199.0, 48.0),
 }
 
