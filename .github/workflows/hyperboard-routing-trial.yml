@@ -41,7 +41,7 @@ jobs:
         run: |
           /usr/bin/python3 scripts/build_pcb_candidate.py out/hyperboard-route/source.net out/hyperboard-route/unrouted.kicad_pcb
           python3 tests/test_mechanical_geometry.py out/hyperboard-route/unrouted.kicad_pcb
-          python3 tests/test_pcb_net_assignment.py out/hyperboard-route/source.net out/hyperboard-route/unrouted.kicad_pcb --candidate-contact-69-open
+          python3 tests/test_pcb_net_assignment.py out/hyperboard-route/source.net out/hyperboard-route/unrouted.kicad_pcb
           kicad-cli pcb drc out/hyperboard-route/unrouted.kicad_pcb -o out/hyperboard-route/drc-before.txt || true
           python3 tests/check_candidate_drc.py out/hyperboard-route/drc-before.txt
       - name: Export KiCad Specctra DSN (no changes to source PCB)
@@ -78,7 +78,7 @@ jobs:
             out/hyperboard-route/board.ses \
             out/hyperboard-route/routed-preview.kicad_pcb
           python3 tests/test_mechanical_geometry.py out/hyperboard-route/routed-preview.kicad_pcb
-          python3 tests/test_pcb_net_assignment.py out/hyperboard-route/source.net out/hyperboard-route/routed-preview.kicad_pcb --candidate-contact-69-open
+          python3 tests/test_pcb_net_assignment.py out/hyperboard-route/source.net out/hyperboard-route/routed-preview.kicad_pcb
       - name: Native KiCad DRC and routing metrics
         run: |
           kicad-cli pcb drc out/hyperboard-route/routed-preview.kicad_pcb -o out/hyperboard-route/drc-after.txt || true
@@ -104,7 +104,7 @@ jobs:
               raise SystemExit(f"Unexpected DRC category: {a['categories']}")
           if r["reduction_in_unconnected_items"] <= 0:
               raise SystemExit("No routing improvement")
-          print("PREVIEW ONLY: physical edge, contact 69, timing, and fab holds remain")
+          print("PREVIEW ONLY: physical fit and TPA/bus timing still require checks; J1-69 now connects to JP2")
           PY
           # A separate Git branch provides a directly openable KiCad PCB without
           # replacing main's authoritative source or dropping the safety marker.
@@ -136,13 +136,14 @@ jobs:
 
           This board is not authorized for fabrication or installation.
           Unresolved: edge finger-to-outline DRC findings, connector finish,
-          the early Netronics contact 69/82 behavior, compatibility with
+          early-Netronics contact 82, JP2 shunt, and compatibility with
           original 2101 RAM/Giant Board, and 1802 TPA/control timing.
 
-          The schematic's optional contact-69 disable jumper intentionally
-          remains **electrically disconnected at the actual J1-69 finger**.
-          SCHEMATIC_REBUILD_IN_PROGRESS stays in place for this reason:
-          the preview does not yet constitute production netlist sync.
+          The original contact J1-69 now connects to JP2-1; JP2-2
+          connects to GND. Closing JP2 reproduces the known-working
+          Hyperboard's Slot-5 onboard-RAM-disable connection. J1-69 is
+          not hardwired to GND. The preview still needs final physical
+          and functional validation before fabrication.
 
           See the routing run's uploaded hyperboard-route-preview artifact
           for before/after DRC, full routing log, and review SVGs.
