@@ -706,8 +706,8 @@
 (label "VCC" (at 51.870 238.660 0) (effects (font (size 1.016 1.016)) (justify right bottom)) (uuid "e1120000-0000-4000-8000-000000000270"))
 (wire (pts (xy 56.950 243.740) (xy 51.870 243.740)) (stroke (width 0) (type default)) (uuid "e1120000-0000-4000-8000-000000000271"))
 (label "GND" (at 51.870 243.740 0) (effects (font (size 1.016 1.016)) (justify right bottom)) (uuid "e1120000-0000-4000-8000-000000000272"))
-(wire (pts (xy 56.950 325.020) (xy 51.870 325.020)) (stroke (width 0) (type default)) (uuid "e1120000-0000-4000-8000-000000000273"))
-(label "GND" (at 51.870 325.020 0) (effects (font (size 1.016 1.016)) (justify right bottom)) (uuid "e1120000-0000-4000-8000-000000000274"))
+
+
 (text "PROTOTYPE - NOT FABRICATION READY" (at 175 24 0) (effects (font (size 1.5 1.5)) (justify left)) (uuid "e1120000-0000-4000-8000-000000000275"))
 (text "Original Netronics ELF II expansion bus - 86 contacts" (at 175 32 0) (effects (font (size 1.5 1.5)) (justify left)) (uuid "e1120000-0000-4000-8000-000000000276"))
 (text "MA0-MA7 first high byte (latch at TPA falling); then low byte" (at 175 40 0) (effects (font (size 1.5 1.5)) (justify left)) (uuid "e1120000-0000-4000-8000-000000000277"))
@@ -776,5 +776,6 @@
 (no_connect (at 56.950 340.260) (uuid "e4120abc-0000-4000-8000-000000000081"))
 (no_connect (at 56.950 342.800) (uuid "e4120abc-0000-4000-8000-000000000083"))
 (no_connect (at 56.950 345.340) (uuid "e4120abc-0000-4000-8000-000000000085"))
+(no_connect (at 56.950 325.020) (uuid "e4120abc-0000-4000-8000-000000000069"))
 (sheet_instances (path "/" (page "1")))
 )
