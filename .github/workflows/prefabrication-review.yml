@@ -28,6 +28,7 @@ jobs:
           python3 tests/test_routed_board_review.py
           python3 tests/test_power_pad_zone_overrides.py
           python3 tests/test_track_quality.py
+          python3 tests/test_power_distribution.py
       - name: Schematic export/ERC and complete PCB pad netlist verification
         run: |
           mkdir -p out/prefab
