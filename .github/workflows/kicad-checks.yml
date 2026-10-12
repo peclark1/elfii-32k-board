@@ -17,6 +17,10 @@ jobs:
           kicad-cli version
       - name: Verify SRAM selection truth table
         run: python3 tests/test_ram_select_logic.py
+      - name: Export reviewable schematic PDF
+        run: |
+          mkdir -p out
+          kicad-cli sch export pdf -o out/elfii-32k-schematic.pdf hardware/kicad/elfii-32k-board.kicad_sch
       - name: KiCad schematic import / netlist export
         run: |
           mkdir -p out
@@ -33,7 +37,7 @@ jobs:
         run: |
           echo "KiCad 7.0.11 CLI does not expose sch erc / pcb drc."
           echo "Successful netlist / Gerber export is a parsing check, NOT ERC/DRC or fabrication validation."
-      - name: Upload generated netlist and Gerbers
+      - name: Upload schematic PDF, netlist and Gerbers
         if: always()
         uses: actions/upload-artifact@v4
         with:
