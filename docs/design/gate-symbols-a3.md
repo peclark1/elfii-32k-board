@@ -1,5 +1,13 @@
 # Revision A3 — conventional logic gates and electrical review
 
+> **Historical A2/A3 checkpoint, superseded on 2026-10-12:** The accepted
+> Hyperboard-derived PCB physically routes **J1-69 to JP2-1**, with JP2-2
+> to GND and the shunt normally open. The original Slot-5 motherboard
+> RAM-disable action is established evidence. **J1-82 remains NC/unresolved**.
+> Statements below describing J1-69 as disconnected or unverified apply
+> only to the older experiment, not the revised PCB.
+
+
 ## Implemented in KiCad schematic
 
 Changed **symbol graphics and schematic placement only**; the SRAM decode logic is intended to be electrically identical to A2.
