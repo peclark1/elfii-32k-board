@@ -32,6 +32,7 @@ jobs:
       - name: Schematic export/ERC and complete PCB pad netlist verification
         run: |
           mkdir -p out/prefab
+          python3 tests/report_fab_features.py | tee out/prefab/fab-features.txt
           kicad-cli sch export netlist -o out/prefab/board.net hardware/kicad/elfii-32k-board.kicad_sch
           kicad-cli sch erc --exit-code-violations -o out/prefab/erc.txt hardware/kicad/elfii-32k-board.kicad_sch
           python3 tests/test_netlist.py out/prefab/board.net
