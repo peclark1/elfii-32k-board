@@ -80,9 +80,11 @@ C5 is bulk decoupling/storage, **not** a substitute for C1–C4.
   before adding the two filled ground regions. The ground fills reduce
   impedance in principle but do not by themselves prove a good transient
   return route or manual solderability of solid copper connections.
-- Full board: **437 copper segments and 35 plated vias**. The 40 remaining
-  **0.15 mm** sections are signal routing, not +5V; verify fabricator
-  actual minimum width/space, copper weight and annular rings.
+- Full board: **437 copper segments and 35 plated vias**. Following the
+  width-only engineering improvement at commit `cea7e443`, **402 segments
+  are 0.20 mm and 35 remaining signal segments are 0.15 mm** (42.94 mm
+  total, none longer than 4.82 mm). Confirm fabricator minimum width/space,
+  copper weight and annular rings before manufacturing approval.
 - The historical 86-contact, 2.54 mm-pitch, two-sided connector and exact
   original outline remain unchanged. The moved supply via is above the
   finger tongue at Y=142.2793, not in the exposed insertion interval.
@@ -137,3 +139,10 @@ The SVG inspection **found no additional demonstrated KiCad electrical
 defect requiring rerouting**. Do not infer that an all-green native
 DRC implies signal integrity, manufacturing authorization or safe
 installation.
+
+## Additional card-edge manufacturability finding
+
+The historic edge-finger copper ends just **0.1016 mm** from the insertion
+edge. Supplier bevel guidance may require a substantially larger setback;
+this is an **unresolved CAM compatibility issue**, not permission to modify
+J1. See [connector fabrication questions](card-edge-cam-manufacturing-review-2026-10-12.md).
