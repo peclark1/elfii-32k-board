@@ -626,7 +626,7 @@
 (wire (pts (xy 220.98 236.22) (xy 337.82 236.22)) (stroke (width 0) (type default)) (uuid "d8cc0000-0000-4000-8000-000000000212"))
 (label "PAGE7" (at 226.06 236.22 0) (effects (font (size 1.016 1.016)) (justify left bottom)) (uuid "d8cc0000-0000-4000-8000-000000000213"))
 (wire (pts (xy 175.26 236.22) (xy 175.26 271.78)) (stroke (width 0) (type default)) (uuid "d8cc0000-0000-4000-8000-000000000214"))
-(label "+5V" (at 175.26 233.68 0) (effects (font (size 1.016 1.016)) (justify right bottom)) (uuid "d8cc0000-0000-4000-8000-000000000215"))
+(label "+5V" (at 175.26 236.22 0) (effects (font (size 1.016 1.016)) (justify right bottom)) (uuid "d8cc0000-0000-4000-8000-000000000215"))
 (wire (pts (xy 175.26 271.78) (xy 185.42 271.78)) (stroke (width 0) (type default)) (uuid "d8cc0000-0000-4000-8000-000000000216"))
 (junction (at 175.26 271.78) (diameter 0) (color 0 0 0 0) (uuid "d8cc0000-0000-4000-8000-000000000217"))
 (wire (pts (xy 175.26 266.7) (xy 185.42 266.7)) (stroke (width 0) (type default)) (uuid "d8cc0000-0000-4000-8000-000000000218"))
