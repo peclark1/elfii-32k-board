@@ -20,6 +20,8 @@ jobs:
           kicad-cli version
       - name: Verify SRAM selection truth table
         run: python3 tests/test_ram_select_logic.py
+      - name: Verify schematic grid alignment
+        run: python3 tests/test_schematic_grid.py
       - name: Export reviewable schematic PDF
         run: |
           mkdir -p out
