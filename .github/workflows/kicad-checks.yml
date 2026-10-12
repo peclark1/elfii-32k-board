@@ -59,7 +59,7 @@ jobs:
       - name: Export front and back PCB SVGs for layout review
         run: |
           mkdir -p out/pcb-svg
-          kicad-cli pcb export svg -l F.Cu,B.Cu,F.SilkS,Edge.Cuts -o out/pcb-svg/ hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb
+          kicad-cli pcb export svg --mode-multi -l F.Cu,B.Cu,F.SilkS,Edge.Cuts -o out/pcb-svg/ hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb
       - name: Require clean KiCad schematic ERC
         run: |
           kicad-cli sch erc hardware/kicad/elfii-32k-board.kicad_sch -o out/erc.txt
