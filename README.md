@@ -42,3 +42,18 @@ The schematic documents a potential low-32K overlap with the original ELF II mem
 ## Current engineering milestone (Rev A3)
 
 Conventional multi-unit gate symbols are in the KiCad schematic; all tested pin/net connections were preserved. **Actual KiCad 9 schematic ERC now reports 0 errors and 0 warnings.** The board remains unrouted, with **100 PCB DRC violations and 87 unconnected items** requiring further work. See [verified ERC cleanup](docs/design/erc-cleanup-a3.md) and [revision A3 gate map](docs/design/gate-symbols-a3.md).
+
+## Completion criteria — visible wiring and routed PCB
+
+**Engineering status: INCOMPLETE.** KiCad's clean ERC currently verifies a schematic that makes most connections through global net labels on short pin stubs. It is electrically connected in the netlist, but it does **not** provide an easy-to-follow wired circuit diagram. The PCB contains placed parts and net assignments but **zero routed copper tracks** (87 unconnected items in the last KiCad DRC).
+
+Before calling the circuit complete:
+
+1. **Make the schematic legible:** draw and label the actual interconnections between the 1802 expansion bus, address latch, 62256 SRAM, decoder gates, configuration jumpers and power/decoupling. Use buses or clearly named off-page connectors only where they improve legibility; no unexplained label-only spaghetti. Inspect the exported PDF at readable scale.
+2. **Re-run full ERC and pin/net regression tests** and compare the exported netlist before and after rewiring, detecting accidental electrical changes.
+3. **Resolve bus compatibility:** early motherboard 2101 RAM overlap and optional memory-disable contact 69, contact 82 uncertainty, Giant Board memory map, and timing/voltage margins before enabling a bank on the physical ELF II.
+4. **Replace first-pass simplified PCB footprints** with authoritative KiCad library footprints; review component placement and edge-connector finger fabrication rules.
+5. **Actually route all intended PCB nets** with copper traces and appropriate +5V/GND distribution. A ground zone alone is not equivalent to a fully routed board.
+6. **Run full PCB DRC and visually review Gerbers.** All unconnected items must be resolved; remaining edge-connector exceptions must be deliberately reviewed, not hidden as generic design-rule suppressions.
+
+**Passing ERC, pin/net tests, or Gerber export does not satisfy items 1, 5 or 6. Do not fabricate the current board.**
