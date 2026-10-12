@@ -52,6 +52,9 @@ jobs:
       - name: Fill PCB copper zones into a temporary board
         run: |
           /usr/bin/python3 tests/fill_zones.py hardware/kicad/elfii-32k-board.kicad_pcb hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb
+          if [ -f hardware/kicad/elfii-32k-board.kicad_dru ]; then
+            cp hardware/kicad/elfii-32k-board.kicad_dru hardware/kicad/elfii-32k-board-ci-filled.kicad_dru
+          fi
       - name: Export Specctra DSN for optional offline Freerouting
         run: |
           /usr/bin/python3 scripts/export_specctra.py hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb out/elfii-32k-board.dsn
