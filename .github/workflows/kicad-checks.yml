@@ -42,7 +42,7 @@ jobs:
       - name: KiCad PCB import / Gerber export
         run: |
           mkdir -p out/gerbers
-          kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Mask,B.Mask,Edge.Cuts -o out/gerbers/ hardware/kicad/elfii-32k-board.kicad_pcb
+          kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Mask,B.Mask,Edge.Cuts -o out/gerbers/ out/elfii-32k-filled.kicad_pcb
       - name: Require clean KiCad schematic ERC
         run: |
           kicad-cli sch erc hardware/kicad/elfii-32k-board.kicad_sch -o out/erc.txt
