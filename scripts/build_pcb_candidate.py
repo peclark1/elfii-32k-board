@@ -19,7 +19,10 @@ from test_netlist import read_nets, balanced_forms  # noqa: E402
 BOARD = ROOT / "hardware/kicad/elfii-32k-board.kicad_pcb"
 
 # First-pass assembly-oriented, through-hole component placement (mm in board
-# coordinates). No routing/clearances have yet been accepted for fabrication.
+# coordinates). KiCad DIP origins are at pin 1, not at the package center.
+# Position the 100nF bypass capacitors near each IC power pin (U1 pin 20,
+# U2 pin 28, U3 pin 16, U4 pin 14); verify courtyard/clearances in native DRC.
+# No routing/clearances have yet been accepted for fabrication.
 PARTS = {
     "U1": ("Package_DIP:DIP-20_W7.62mm", "74HC573", 81.0, 69.0),
     "U2": ("Package_DIP:DIP-28_W15.24mm", "CY62256-70PC", 121.0, 69.0),
@@ -38,10 +41,10 @@ PARTS = {
         "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
         "MEM_DISABLE_UNVERIFIED", 190.0, 103.0,
     ),
-    "C1": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 98.0, 99.0),
-    "C2": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 145.0, 108.0),
-    "C3": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 174.0, 96.0),
-    "C4": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 175.0, 104.0),
+    "C1": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 94.0, 69.0),
+    "C2": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 142.0, 69.0),
+    "C3": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 173.0, 73.0),
+    "C4": ("Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "100n", 199.0, 74.0),
     "C5": ("Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", "10u POLARIZED PIN1=+5V", 199.0, 48.0),
 }
 
