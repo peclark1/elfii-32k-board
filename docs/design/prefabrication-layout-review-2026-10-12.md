@@ -38,14 +38,21 @@ The first 426-segment/27-via trial and historical NC J1-69 notes are
 2. **Created a ground-return system.** Added F.Cu and B.Cu GND zones,
    with 0.30 mm clearance and thermal parameters and a conservative
    Y=141.5 southern boundary to exclude the entire finger tongue.
-   Existing routed GND tracks stay until their effectiveness can be
-   independently checked against filled pours in KiCad.
-3. **Fixed stale regression logic.** The original motherboard-RAM-disable
+   KiCad initially found 57 isolated copper regions and two starved thermal
+   connections. Both planes now remove *all* isolated islands, and **C2 pin 2**
+   and **U4 pin 2** have targeted solid GND ties to avoid the incomplete
+   thermal connections. Native filled-board DRC is mandatory for these ties.
+3. **Power neckdown review:** Widened the two 0.15 mm F.Cu
+   +5 V neckdowns near C2 to 0.20 mm. A 0.30 mm experiment created two
+   0.1984 mm clearance failures against the C2 ground pad; it was corrected
+   back to 0.20 mm before final validation. All +5 V tracks are at least
+   0.20 mm; 40 short 0.15 mm signal neckdowns remain subject to fab limits.
+4. **Fixed stale regression logic.** The original motherboard-RAM-disable
    behavior in Slot 5 is established prior evidence. The safety guard
    requires J1-69 → JP2-1; JP2-2 → GND, removable jumper normally open;
    J1-82 remains NC. A second check traverses the actual F/B trace and
    via graph to verify continuity from J1-69 to JP2-1.
-4. **Established a dedicated native CI gate.** The workflow validates
+5. **Established a dedicated native CI gate.** The workflow validates
    schematic ERC, original mechanical geometry, pin/net mapping,
    physical copper safety, temporary zone refill and project-local
    full-board KiCad 9 DRC. It uploads inspection SVGs and test reports,
@@ -54,23 +61,24 @@ The first 426-segment/27-via trial and historical NC J1-69 notes are
 ## Electrical/physical questions that are *not* cleared by DRC
 
 - **Power distribution:** the original 0.20 mm power and ground tracks
-  are uncomfortably narrow for a long common supply backbone; +5 V
-  includes two 0.15 mm neckdowns near the upper IC region.
-  The new ground zones improve returns *if* their filled copper has
-  reliable thermal/pad connectivity and reasonable continuity.
-  They do not automatically solve +5 V trace-current/voltage-drop
-  and transient-return concerns. Check copper weight, supply budget
-  and actual filled-zone geometry before authorizing fabrication.
+  are narrow for a long common supply backbone. The two especially narrow
+  0.15 mm **+5 V** sections have been increased to 0.20 mm, but the
+  entire power-distribution network still warrants a current/voltage-drop,
+  transient-ground-return and copper-weight review. The ground pours use
+  KiCad disconnected-island removal and local solid ties at C2-2/U4-2;
+  assess return continuity and solderability from the actual filled
+  copper. Do not mistake DRC clearance for a voltage-drop check.
 - **Decoupling:** C1, C2, C3, C4 serve U1–U4; pad-center distance to
   each respective VCC pad is about 5.4, 5.8, 6.4 and 11.6 mm.
   C4/U4 is the weakest local placement; measure actual loop length,
   return paths and socket clearances rather than assuming its physical
   proximity is adequate. C5 is bulk support, not an IC-local bypass.
 - **Route quality:** several 100+ mm address/control traces cross the
-  full-length connector-to-IC distance; all routing widths and neckdown
-  clearances must be checked against the actual board house capability.
-  The 0.15 mm segments are especially fabrication-sensitive; inspect
-  any short microsegments and mask/sliver clearances in copper SVGs.
+  connector-to-IC distance. The corrected PCB has **437 copper
+  segments, 35 plated vias, 397 sections at 0.20 mm and 40 at 0.15 mm**.
+  Validate all routing widths and remaining 0.15 mm signal neckdowns
+  against the board house's actual copper/annular-ring capability.
+  Check any microsegments and mask slivers using filled review SVGs.
 - **Edge contact specification:** the native board records 1.6 mm
   thickness and original two-sided 86-finger Gerber geometry, but this
   is not a manufacturer's approval. Specify selective hard gold (or an
