@@ -36,6 +36,8 @@ jobs:
         run: python3 tests/test_bus_contact_safety.py
       - name: Compare schematic and PCB pad net assignments
         run: python3 tests/test_pcb_net_assignment.py out/elfii-32k-board.net hardware/kicad/elfii-32k-board.kicad_pcb
+      - name: Validate copper zone parser syntax
+        run: python3 tests/test_pcb_zone_syntax.py
       - name: Test source PCB parser before zone fill
         run: |
           mkdir -p out/raw
