@@ -2,7 +2,7 @@
 
 ## Decision
 
-The A5 schematic/PCB is retained in Git history as a routing study, but the electrical design is being rebuilt from the AVI Hyperboard Rev 2 RAM architecture.
+The A5 schematic/PCB remains in Git history as a routing study. The Hyperboard-derived electrical design is now fully routed on a **separate pre-fabrication engineering-review branch**, not yet the authoritative `main` design. See [current review](prefabrication-layout-review-2026-10-12.md).
 
 Primary source: `AVIELF2HYPERBOARD-KiCad-Rev2.pdf` (Rev 2.0, 2026-03-17).
 
@@ -19,7 +19,7 @@ Keep the existing verified 86-contact edge connector geometry. Required source c
 - /MWR: P3-24
 - D7..D0: P3-34,38,42,46,50,54,58,62
 - MA7..MA0: P3-36,40,44,48,52,56,60,64
-- optional motherboard-RAM-disable contact: P3-69, **default open and still early-Netronics-unverified**
+- motherboard-RAM-disable contact P3-69: previous Slot-5 behavior established; wired J1-69 → JP2-1, JP2-2 → GND, shunt normally open
 - +5 V / GND from the already documented power contacts.
 
 ### High-address latch — Hyperboard A8, 74HC573
@@ -54,13 +54,13 @@ A15 is not a 62256 address input. It qualifies the LS151 enable so the RAM occup
 
 Copy the source page selector:
 
-- U1 = 74LS151.
+- The Hyperboard source uses U1 = 74LS151; **standalone U3 is a pin-compatible 74HC151** (documented LOW-level input-margin adaptation).
 - S0/S1/S2 = A12/A13/A14.
 - I0..I7 = 0000,1000,...7000 page-enable switch states.
 - SW1 connects an enabled page to +5 V.
 - RN3 provides one 22K pull-down per page.
 - U1 Z pin 5 is unused.
-- U1 /Z pin 6 directly drives SRAM /CS.
+- Standalone U3 /Z pin 6 directly drives SRAM /CS.
 
 ### 32K-half select
 
@@ -77,7 +77,7 @@ This is electrically equivalent to the RAM side of Hyperboard J8 without copying
 
 The Hyperboard labels P3-69 `RAM_CE` and ties that connector net to GND. The copper Gerber therefore correctly reports pad 69 as GND.
 
-That connector signal is **not** the Hyperboard SRAM /CS. On this standalone board it is only an optional motherboard-RAM-disable function. Provide a normally-open jumper from P3-69 to GND and retain the existing warning that early-Netronics behavior must be bench verified before use.
+That connector signal is **not** the Hyperboard SRAM /CS. On this standalone board it is only an optional motherboard-RAM-disable function. The current PCB implements J1-69 → JP2-1 and JP2-2 → GND, removable shunt normally open. The original Slot-5 motherboard-RAM-disable behavior is already established. J1-82 and total system memory/timing compatibility remain open.
 
 ## Omitted Hyperboard functions
 
@@ -85,7 +85,7 @@ Do not copy the 28C256 ROM, UART, cassette circuitry, CDP1853 I/O decoding, auto
 
 The source A13A 74HC74 belongs to the shared memory/boot block and is not required for the standalone RAM path. The Rev 2 drawing also reuses the A15 net name around that flip-flop in a way that is not useful to reproduce. The standalone design uses the already-latched A15 from the 74HC573 directly.
 
-## Rebuild sequence
+## Historical rebuild sequence (implemented; release gates remain)
 
 1. Replace the old custom 74HCT273/XOR/OR schematic with P3 -> 74HC573 -> CY62256.
 2. Add the exact 74LS151 + 8-position 4K page selector.
