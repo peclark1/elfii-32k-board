@@ -32,3 +32,9 @@ License selection is pending. Historical source drawings may have separate copyr
 ## Electrical schematic progress (draft)
 
 An initial connected KiCad schematic (U1–U5, J1, JP1–JP2, R1–R2, C1–C5) is committed. It uses actual DIP pin numbers, net labels, and the two-unit 86-contact connector, plus a project-local `ELFII_32K.kicad_sym` library. See [electrical design](docs/design/sram-electrical-design.md) and the [truth-table test](tests/test_ram_select_logic.py). **No KiCad/ERC, bus-timing or physical validation yet.**
+
+## Original early ELF II compatibility checks
+
+The original Netronics 4K memory-board schematic identifies expansion contact **69** as **“MOTHER BD. MEMORIES OFF” (if used)**, whereas the AVI Hyperboard Rev 2 manufacturing netlist labels the same contact as GND. **Do not connect contact 69 to GND on the original motherboard without verification.** The current 32K expansion PCB and schematic leave contact 69 unconnected and note its historical function; contact 82 likewise remains NC pending measurement. See [period-source cross-check](docs/reference/original-4k-board-crosscheck.md) and the [bench verification procedure](docs/design/early-elfii-bus-bench-validation.md).
+
+The schematic documents a potential low-32K overlap with the original ELF II memory. Neither the board's electrical coexistence nor full KiCad ERC/DRC is certified; **do not fabricate or install yet**.
