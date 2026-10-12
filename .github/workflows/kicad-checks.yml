@@ -37,10 +37,7 @@ jobs:
       - name: Compare schematic and PCB pad net assignments
         run: python3 tests/test_pcb_net_assignment.py out/elfii-32k-board.net hardware/kicad/elfii-32k-board.kicad_pcb
       - name: Check routed PCB copper topology and segment count
-        continue-on-error: true
-        run: |
-          python3 tests/test_track_quality.py
-          echo "Experimental full-route branch may exceed normal via/segment quality thresholds; DRC remains authoritative for shorts/clearance."
+        run: python3 tests/test_track_quality.py
       - name: Guard power pad-to-zone connection settings
         run: python3 tests/test_power_pad_zone_overrides.py
       - name: Validate copper zone parser syntax
@@ -52,12 +49,6 @@ jobs:
       - name: Fill PCB copper zones into a temporary board
         run: |
           /usr/bin/python3 tests/fill_zones.py hardware/kicad/elfii-32k-board.kicad_pcb hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb
-          if [ -f hardware/kicad/elfii-32k-board.kicad_dru ]; then
-            cp hardware/kicad/elfii-32k-board.kicad_dru hardware/kicad/elfii-32k-board-ci-filled.kicad_dru
-          fi
-          if [ -f hardware/kicad/elfii-32k-board.kicad_pro ]; then
-            cp hardware/kicad/elfii-32k-board.kicad_pro hardware/kicad/elfii-32k-board-ci-filled.kicad_pro
-          fi
       - name: Export Specctra DSN for optional offline Freerouting
         run: |
           /usr/bin/python3 scripts/export_specctra.py hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb out/elfii-32k-board.dsn
