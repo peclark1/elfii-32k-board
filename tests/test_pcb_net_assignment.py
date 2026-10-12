@@ -14,7 +14,10 @@ def board_pads(path):
     data = Path(path).read_text(encoding="utf-8")
     assignments = {}
     for footprint in balanced_forms(data, "footprint "):
-        match = re.search(r'\(fp_text reference "([^"]+)"', footprint)
+        match = re.search(
+            r'\((?:fp_text\s+reference|property\s+"Reference")\s+"([^"]+)"',
+            footprint,
+        )
         if not match:
             continue
         ref = match.group(1)
