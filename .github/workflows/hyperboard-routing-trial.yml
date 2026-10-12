@@ -12,7 +12,7 @@ on:
       - "hardware/kicad/ELFII_32K.kicad_sym"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   autoroute:
@@ -89,6 +89,68 @@ jobs:
             out/hyperboard-route/drc-after.txt \
             out/hyperboard-route/routing-summary.json
           python3 tests/check_candidate_drc.py out/hyperboard-route/drc-after.txt
+      - name: Publish zero-unconnected DRC-screened PCB to an experiment branch
+        if: success()
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path("out/hyperboard-route/routing-summary.json").read_text())
+          a = r["after"]["drc"]
+          if a["unconnected_items"] != 0:
+              raise SystemExit("Router left airwires; keep artifact only, do not publish branch")
+          allowed = {"copper_edge_clearance", "lib_footprint_issues"}
+          if any(k not in allowed for k in a["categories"]):
+              raise SystemExit(f"Unexpected DRC category: {a['categories']}")
+          if r["reduction_in_unconnected_items"] <= 0:
+              raise SystemExit("No routing improvement")
+          print("PREVIEW ONLY: physical edge, contact 69, timing, and fab holds remain")
+          PY
+          # A separate Git branch provides a directly openable KiCad PCB without
+          # replacing main's authoritative source or dropping the safety marker.
+          PREVIEW_BRANCH="experiment/hyperboard-route-${GITHUB_SHA:0:8}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$PREVIEW_BRANCH"
+          cp out/hyperboard-route/routed-preview.kicad_pcb hardware/kicad/elfii-32k-board.kicad_pcb
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("hardware/kicad/elfii-32k-board.kicad_pcb")
+          data = p.read_text()
+          data = data.replace(
+              '(rev "A5b - electrical prototype, routing incomplete")',
+              '(rev "HYPERBOARD ROUTING PREVIEW - NOT FOR FAB")',
+          )
+          data = data.replace(
+              '(comment 2 "UNFINISHED ROUTING / NOT FABRICATION READY")',
+              '(comment 2 "DRC CHECKED, EDGE/69/82/BUS TIMING NOT VERIFIED - NO FAB")',
+          )
+          p.write_text(data)
+          PY
+          cat > docs/design/hyperboard-route-preview.md <<'EOF'
+          # Hyperboard SRAM routing preview — NOT for fabrication
+
+          This branch replaces the old A5 PCB routing **only for preview**
+          with copper from a separate Freerouting 2.5 trial on the
+          Hyperboard-derived KiCad 9 schematic/placement.
+
+          This board is not authorized for fabrication or installation.
+          Unresolved: edge finger-to-outline DRC findings, connector finish,
+          the early Netronics contact 69/82 behavior, compatibility with
+          original 2101 RAM/Giant Board, and 1802 TPA/control timing.
+
+          The schematic's optional contact-69 disable jumper intentionally
+          remains **electrically disconnected at the actual J1-69 finger**.
+          SCHEMATIC_REBUILD_IN_PROGRESS stays in place for this reason:
+          the preview does not yet constitute production netlist sync.
+
+          See the routing run's uploaded hyperboard-route-preview artifact
+          for before/after DRC, full routing log, and review SVGs.
+          EOF
+          git add hardware/kicad/elfii-32k-board.kicad_pcb docs/design/hyperboard-route-preview.md
+          git commit -m "WIP: Hyperboard-derived fully connected routing preview (not for fab)"
+          git push origin "HEAD:refs/heads/$PREVIEW_BRANCH"
+          echo "Review branch: $PREVIEW_BRANCH"
       - name: Export front/back review SVG (NOT manufacturing Gerbers)
         if: always()
         run: |
