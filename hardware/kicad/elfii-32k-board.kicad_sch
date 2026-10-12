@@ -1,7 +1,7 @@
 (kicad_sch (version 20230121) (generator "eeschema")
 (uuid "89d8d6a8-e087-4cc0-b51a-852515026bd4")
 (paper "A2")
-(title_block (title "Netronics ELF II 32K Static RAM Expansion") (date "2026-10-11") (rev "A4 - functional SRAM/address symbols") (company "Community restoration project") (comment 1 "Historical bus interface; NOT validated/fabrication-ready"))
+(title_block (title "Netronics ELF II 32K Static RAM Expansion") (date "2026-10-11") (rev "A5 - explicit decode signal wiring") (company "Community restoration project") (comment 1 "Historical bus interface; NOT validated/fabrication-ready"))
 (lib_symbols
   (symbol "ELFII_Expansion:ELFII_P3"
     (pin_names (offset 0.254))
@@ -945,11 +945,22 @@
 (label "A14" (at 223.520 121.920 0) (effects (font (size 1.016 1.016)) (justify left bottom)) (uuid "f1d62026-0000-4000-8000-000000001093"))
 (wire (pts (xy 223.520 124.460) (xy 228.600 124.460)) (stroke (width 0) (type default)) (uuid "f1d62026-0000-4000-8000-000000001094"))
 (label "A15" (at 228.600 124.460 0) (effects (font (size 1.016 1.016)) (justify left bottom)) (uuid "f1d62026-0000-4000-8000-000000001095"))
-(label "A15" (at 304.800 241.300 0) (effects (font (size 1.016 1.016)) (justify right bottom)) (uuid "f1d62026-0000-4000-8000-000000001096"))
-(label "MISMATCH" (at 431.800 241.300 0) (effects (font (size 1.016 1.016)) (justify right bottom)) (uuid "f1d62026-0000-4000-8000-000000001097"))
-(label "NOT_ENABLE" (at 431.800 248.920 0) (effects (font (size 1.016 1.016)) (justify right bottom)) (uuid "f1d62026-0000-4000-8000-000000001098"))
+
+
+
 (label "NCE" (at 472.440 245.110 0) (effects (font (size 1.016 1.016)) (justify left bottom)) (uuid "f1d62026-0000-4000-8000-000000001099"))
 (label "NOE" (at 472.440 275.590 0) (effects (font (size 1.016 1.016)) (justify left bottom)) (uuid "f1d62026-0000-4000-8000-000000001100"))
 (label "NWE" (at 472.440 304.800 0) (effects (font (size 1.016 1.016)) (justify left bottom)) (uuid "f1d62026-0000-4000-8000-000000001101"))
+(wire (pts (xy 228.6 124.46) (xy 252.73 124.46)) (stroke (width 0) (type default)) (uuid "b0532026-0000-4000-8000-000000004100"))
+(wire (pts (xy 252.73 124.46) (xy 252.73 241.3)) (stroke (width 0) (type default)) (uuid "b0532026-0000-4000-8000-000000004101"))
+(wire (pts (xy 252.73 241.3) (xy 304.8 241.3)) (stroke (width 0) (type default)) (uuid "b0532026-0000-4000-8000-000000004102"))
+(wire (pts (xy 345.44 245.11) (xy 391.16 245.11)) (stroke (width 0) (type default)) (uuid "b0532026-0000-4000-8000-000000004103"))
+(wire (pts (xy 391.16 245.11) (xy 391.16 241.3)) (stroke (width 0) (type default)) (uuid "b0532026-0000-4000-8000-000000004104"))
+(wire (pts (xy 391.16 241.3) (xy 431.8 241.3)) (stroke (width 0) (type default)) (uuid "b0532026-0000-4000-8000-000000004105"))
+(wire (pts (xy 210.82 275.59) (xy 257.81 275.59)) (stroke (width 0) (type default)) (uuid "b0532026-0000-4000-8000-000000004106"))
+(wire (pts (xy 257.81 275.59) (xy 257.81 217.17)) (stroke (width 0) (type default)) (uuid "b0532026-0000-4000-8000-000000004107"))
+(wire (pts (xy 257.81 217.17) (xy 417.83 217.17)) (stroke (width 0) (type default)) (uuid "b0532026-0000-4000-8000-000000004108"))
+(wire (pts (xy 417.83 217.17) (xy 417.83 248.92)) (stroke (width 0) (type default)) (uuid "b0532026-0000-4000-8000-000000004109"))
+(wire (pts (xy 417.83 248.92) (xy 431.8 248.92)) (stroke (width 0) (type default)) (uuid "b0532026-0000-4000-8000-000000004110"))
 (sheet_instances (path "/" (page "1")))
 )
