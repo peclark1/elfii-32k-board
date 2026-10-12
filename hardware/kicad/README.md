@@ -1,53 +1,31 @@
-# ELF II 32K SRAM KiCad design — Hyperboard-derived revision
+# ELF II 32K SRAM KiCad — Hyperboard-derived review
 
-**Work in progress; not a fabrication or installation release.**
+**Review branch only:** `feature/hyperboard-pcb-prefab-review`.
+**Do not fabricate, install, or replace main's authoritative PCB.**
 
-## Current source files
+The schematic follows the AVI Hyperboard Rev 2 RAM path (U1 74HC573,
+U2 CY62256, U3 74HC151, U4 CD4011). The source PCB on this feature
+branch is the **physically routed Hyperboard-derived revision**, not
+the obsolete A5 netlist and routing study still preserved on main.
 
-- `elfii-32k-board.kicad_sch`: active electrical design, rebuilt from the
-  AVI Hyperboard Rev 2 SRAM/address/page-select circuit.
-- `ELFII_32K.kicad_sym`: project-specific schematic symbols.
-- `elfii-32k-board.kicad_pcb`: **previous A5 copper routing study**.
-  Its track netlist is from the obsolete custom 74HCT273/XOR/OR circuit.
-  **Do not assume that this PCB matches the current schematic.**
-- `ELFII_Expansion.pretty` and `ELFII_Expansion.kicad_sym`: the
-  measured genuine full-size two-sided 86-contact ELF II card edge,
-  preserved unchanged.
-- `SCHEMATIC_REBUILD_IN_PROGRESS`: intentional protection against
-  using the old PCB as though its pads/traces matched the new schematic.
+The `SCHEMATIC_REBUILD_IN_PROGRESS` marker intentionally remains.
+The dedicated `prefabrication-review.yml` workflow **always** checks
+the fully routed preview, regardless of this marker, using original
+mechanical regression, source netlist/ERC, netlist-to-PCB pad matching,
+insertion-area via screening, full copper connectivity and filled
+native KiCad 9 DRC in the actual local footprint-library directory.
 
-## New PCB placement and routing workflow
+The accepted revision connects J1-69 to JP2-1; JP2-2 goes to GND.
+Closing the removable shunt invokes the **previously established
+Slot-5 motherboard-RAM-disable** function. The shunt is normally open.
+J1-82 remains unconnected pending independent verification.
 
-The `KiCad design checks` GitHub Action exports the current schematic
-netlist and invokes `scripts/build_pcb_candidate.py` to generate a
-**new, separate through-hole PCB candidate**. The generator retains the
-original connector and board outline but replaces all old-architecture
-parts, traces and vias. It tests the source-to-pad pin map and runs actual
-KiCad 9 DRC. The new design has U1 74HC573, U2 62256, U3 74HC151,
-U4 CD4011, an eight-way page DIP, jumpers and bypass capacitors.
+The physical review adds two GND zones kept behind the edge-finger
+tongue and moves a +5V via out of the bevel/finger region. Long narrow
+power routing and copper neckdowns, decoupling loops, physical
+connector height/fit, ground-zone effectiveness, early-ELF timing,
+memory coexistence and manufacturer-approved hard-gold/edge bevel
+remain open.
 
-The `Hyperboard SRAM routing trial (preview only)` Action additionally
-exports this *new* candidate to Specctra DSN, attempts Freerouting 2.5,
-imports any produced session into a **separate** KiCad PCB, reruns pin
-and mechanical checks, compares native DRC findings and uploads front/back
-SVGs and all evidence as an Action artifact. It does not overwrite source
-copper. Download the latest `hyperboard-route-preview` artifact
-from the corresponding GitHub Actions run.
-
-## Electrical safety and release holds
-
-- Source schematic can pass ERC and strict memory pin/net tests without
-  proving 1802 timing or compatibility with original onboard 2101 RAM.
-- Physical connector **J1-69 remains NC on generated routing candidates**,
-  deliberately differing from the optional disable-jumper schematic until
-  early-original-Netronics behavior is bench verified. J1-82 remains NC.
-- The card-edge copper-to-outline findings are intentional but must be
-  resolved with board manufacturing requirements (plating, bevel and
-  mating-contact geometry), not silently waived for fabrication.
-- A routed board still requires source/schematic reconciliation, zero
-  unexplained DRC violations, visual layout review, bench validation, and
-  a deliberate fabrication signoff.
-
-See `docs/design/hyperboard-ram-rebuild.md`,
-`docs/design/hyperboard-ram-circuit-trace.md` and
-`docs/design/page-select-ttl-input-margin.md` for electrical provenance.
+See `docs/design/prefabrication-layout-review-2026-10-12.md` for
+measured routing facts and release holds.
