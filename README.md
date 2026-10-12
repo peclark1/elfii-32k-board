@@ -28,3 +28,7 @@ The **KiCad PCB now contains the measured Hyperboard Rev 2 outline and 86-contac
 ## License
 
 License selection is pending. Historical source drawings may have separate copyrights; they are references, not assumed freely redistributable assets.
+
+## Electrical schematic progress (draft)
+
+An initial connected KiCad schematic (U1–U5, J1, JP1–JP2, R1–R2, C1–C5) is committed. It uses actual DIP pin numbers, net labels, and the two-unit 86-contact connector, plus a project-local `ELFII_32K.kicad_sym` library. See [electrical design](docs/design/sram-electrical-design.md) and the [truth-table test](tests/test_ram_select_logic.py). **No KiCad/ERC, bus-timing or physical validation yet.**
