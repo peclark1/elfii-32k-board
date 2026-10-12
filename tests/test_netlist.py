@@ -2,7 +2,7 @@
 """Validate the Hyperboard-derived ELF II SRAM schematic from a KiCad netlist.
 
 These assertions are intentionally pin-specific.  They guard the source-traced
-74HC573/CY62256/74LS151 architecture against accidental rewiring; they do not
+74HC573/CY62256/74HC151 page-select adaptation against accidental rewiring; they do not
 replace KiCad ERC or bench timing/compatibility checks.
 """
 import re
@@ -99,7 +99,7 @@ ram_d_pin = {0:"11", 1:"12", 2:"13", 3:"15", 4:"16", 5:"17", 6:"18", 7:"19"}
 for bit in range(8):
     EXPECTED[f"D{bit}"] = [("J1", edge_d_pin[bit]), ("U2", ram_d_pin[bit])]
 
-# Hyperboard page map: SW1 -> 22K pulldown -> 74LS151 I0..I7.
+# Hyperboard page map: SW1 -> 22K pulldown -> pin-compatible 74HC151 I0..I7.
 mux_i_pin = ["4","3","2","1","15","14","13","12"]
 for page in range(8):
     EXPECTED[f"PAGE{page}"] = [
