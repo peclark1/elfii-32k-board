@@ -63,6 +63,14 @@ jobs:
         run: |
           echo "Schematic ERC is now enforced. PCB DRC remains diagnostic while intentionally unrouted."
           echo "PCB routing is intentionally incomplete. Do not manufacture."
+      - name: Include source and zone-filled PCB snapshots
+        if: always()
+        run: |
+          mkdir -p out/boards
+          cp hardware/kicad/elfii-32k-board.kicad_pcb out/boards/elfii-32k-source.kicad_pcb
+          if [ -f hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb ]; then
+            cp hardware/kicad/elfii-32k-board-ci-filled.kicad_pcb out/boards/elfii-32k-zones-filled.kicad_pcb
+          fi
       - name: Upload schematic PDF, netlist and Gerbers
         if: always()
         uses: actions/upload-artifact@v4
