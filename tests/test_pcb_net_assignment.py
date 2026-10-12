@@ -36,6 +36,10 @@ def main():
         raise SystemExit("usage: test_pcb_net_assignment.py export.net board.kicad_pcb")
     expected = {}
     for name, nodes in read_nets(Path(sys.argv[1])).items():
+        # KiCad invents pseudo-nets for intentionally unconnected symbol pins.
+        # They have no physical copper net and must not be copied onto PCB pads.
+        if name.startswith("unconnected-"):
+            continue
         for node in nodes:
             if node in expected and expected[node] != name:
                 raise ValueError(f"Schematic pin {node} on multiple nets")
