@@ -1,0 +1,108 @@
+name: Hyperboard SRAM routing trial (preview only)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/hyperboard-routing-trial.yml"
+      - "scripts/build_pcb_candidate.py"
+      - "scripts/summarize_route_trial.py"
+      - "hardware/kicad/elfii-32k-board.kicad_sch"
+      - "hardware/kicad/ELFII_32K.kicad_sym"
+
+permissions:
+  contents: read
+
+jobs:
+  autoroute:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install KiCad 9 and Java 25
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository -y ppa:kicad/kicad-9.0-releases
+          sudo apt-get update
+          sudo apt-get install -y kicad
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - name: Export verified schematic netlist
+        run: |
+          mkdir -p out/hyperboard-route
+          kicad-cli sch export netlist -o out/hyperboard-route/source.net hardware/kicad/elfii-32k-board.kicad_sch
+          kicad-cli sch erc --exit-code-violations -o out/hyperboard-route/erc.txt hardware/kicad/elfii-32k-board.kicad_sch
+          python3 tests/test_netlist.py out/hyperboard-route/source.net
+      - name: Build electrically synchronized, unrouted PCB candidate
+        run: |
+          /usr/bin/python3 scripts/build_pcb_candidate.py out/hyperboard-route/source.net out/hyperboard-route/unrouted.kicad_pcb
+          python3 tests/test_mechanical_geometry.py out/hyperboard-route/unrouted.kicad_pcb
+          python3 tests/test_pcb_net_assignment.py out/hyperboard-route/source.net out/hyperboard-route/unrouted.kicad_pcb --candidate-contact-69-open
+          kicad-cli pcb drc out/hyperboard-route/unrouted.kicad_pcb -o out/hyperboard-route/drc-before.txt || true
+          python3 tests/check_candidate_drc.py out/hyperboard-route/drc-before.txt
+      - name: Export KiCad Specctra DSN (no changes to source PCB)
+        run: |
+          /usr/bin/python3 scripts/export_specctra.py out/hyperboard-route/unrouted.kicad_pcb out/hyperboard-route/board.dsn
+      - name: Download pinned Freerouting release
+        run: |
+          curl --fail --location --silent --show-error --retry 3 \
+            "https://github.com/freerouting/freerouting/releases/download/v2.5.0/freerouting-2.5.0.jar" \
+            --output /tmp/freerouting-2.5.0.jar
+          sha256sum /tmp/freerouting-2.5.0.jar | tee out/hyperboard-route/router-sha256.txt
+          java -jar /tmp/freerouting-2.5.0.jar -help | head -n 35 || true
+      - name: Autoroute all signal and supply nets (unapproved trial)
+        run: |
+          set +e
+          timeout 15m java -Xmx4g -jar /tmp/freerouting-2.5.0.jar \
+            --gui.enabled=false -da -mp 10 -mt 2 \
+            --router.optimizer.improvement_threshold=4.0 \
+            -de out/hyperboard-route/board.dsn \
+            -do out/hyperboard-route/board.ses \
+            > out/hyperboard-route/freerouting.log 2>&1
+          status=$?
+          set -e
+          echo "Freerouting exit: $status"
+          tail -n 80 out/hyperboard-route/freerouting.log || true
+          if [ ! -s out/hyperboard-route/board.ses ]; then
+            echo "No SES produced; keep trial outputs for debugging"
+            exit 1
+          fi
+      - name: Import routed SES into separate PCB file
+        run: |
+          /usr/bin/python3 scripts/import_specctra.py \
+            out/hyperboard-route/unrouted.kicad_pcb \
+            out/hyperboard-route/board.ses \
+            out/hyperboard-route/routed-preview.kicad_pcb
+          python3 tests/test_mechanical_geometry.py out/hyperboard-route/routed-preview.kicad_pcb
+          python3 tests/test_pcb_net_assignment.py out/hyperboard-route/source.net out/hyperboard-route/routed-preview.kicad_pcb --candidate-contact-69-open
+      - name: Native KiCad DRC and routing metrics
+        run: |
+          kicad-cli pcb drc out/hyperboard-route/routed-preview.kicad_pcb -o out/hyperboard-route/drc-after.txt || true
+          python3 scripts/summarize_route_trial.py \
+            out/hyperboard-route/unrouted.kicad_pcb \
+            out/hyperboard-route/routed-preview.kicad_pcb \
+            out/hyperboard-route/drc-before.txt \
+            out/hyperboard-route/drc-after.txt \
+            out/hyperboard-route/routing-summary.json
+          python3 tests/check_candidate_drc.py out/hyperboard-route/drc-after.txt
+      - name: Export front/back review SVG (NOT manufacturing Gerbers)
+        if: always()
+        run: |
+          if [ -f out/hyperboard-route/routed-preview.kicad_pcb ]; then
+            mkdir -p out/hyperboard-route/svg
+            kicad-cli pcb export svg --mode-multi \
+              -l F.Cu,B.Cu,F.SilkS,Edge.Cuts \
+              -o out/hyperboard-route/svg/ \
+              out/hyperboard-route/routed-preview.kicad_pcb || true
+          fi
+      - name: Upload full routing preview and DRC evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hyperboard-route-preview
+          path: out/hyperboard-route/
+          retention-days: 30
