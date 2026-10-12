@@ -1,0 +1,73 @@
+name: Prototype CAM review bundle (NOT for fabrication)
+
+on:
+  push:
+    branches: ["feature/hyperboard-pcb-prefab-review"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preorder-artifacts:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install KiCad 9
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository -y ppa:kicad/kicad-9.0-releases
+          sudo apt-get update
+          sudo apt-get install -y kicad
+          kicad-cli version
+      - name: Full source-board preflight
+        run: |
+          set -eu
+          python3 tests/test_mechanical_geometry.py
+          python3 tests/test_bus_contact_safety.py
+          python3 tests/test_ram_select_logic.py
+          python3 tests/test_routed_board_review.py
+          python3 tests/test_track_quality.py
+          python3 tests/test_power_distribution.py
+          python3 tests/test_power_pad_zone_overrides.py
+          python3 tests/test_review_bom.py
+          mkdir -p out/preorder/gerbers
+          python3 tests/report_fab_features.py > out/preorder/measured-fabrication-features.txt
+          kicad-cli sch export netlist -o out/preorder/design.net hardware/kicad/elfii-32k-board.kicad_sch
+          kicad-cli sch erc --exit-code-violations -o out/preorder/erc.txt hardware/kicad/elfii-32k-board.kicad_sch
+          python3 tests/test_netlist.py out/preorder/design.net
+          python3 tests/test_pcb_net_assignment.py out/preorder/design.net hardware/kicad/elfii-32k-board.kicad_pcb
+      - name: Fill and strictly DRC real routed PCB
+        run: |
+          set -eu
+          /usr/bin/python3 tests/fill_zones.py hardware/kicad/elfii-32k-board.kicad_pcb hardware/kicad/elfii-32k-review-filled.kicad_pcb
+          cp hardware/kicad/elfii-32k-board.kicad_dru hardware/kicad/elfii-32k-review-filled.kicad_dru
+          kicad-cli pcb drc --exit-code-violations -o out/preorder/drc-filled.txt hardware/kicad/elfii-32k-review-filled.kicad_pcb
+          python3 tests/check_candidate_drc.py out/preorder/drc-filled.txt
+      - name: Export review Gerbers, drills, schematic and BOM
+        run: |
+          set -eu
+          kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Mask,B.Mask,F.SilkS,B.SilkS,Edge.Cuts -o out/preorder/gerbers/ hardware/kicad/elfii-32k-review-filled.kicad_pcb
+          kicad-cli pcb export drill -o out/preorder/gerbers/ hardware/kicad/elfii-32k-review-filled.kicad_pcb
+          kicad-cli sch export bom -o out/preorder/BOM-from-KiCad.csv hardware/kicad/elfii-32k-board.kicad_sch
+          kicad-cli sch export pdf -o out/preorder/elfii-32k-schematic.pdf hardware/kicad/elfii-32k-board.kicad_sch
+          cp hardware/bom/elfii-32k-prototype-bom.csv out/preorder/BOM-assembly-review.csv
+          cp docs/design/prototype-fabrication-readiness-2026-10-12.md out/preorder/READINESS-REPORT.md
+          cp docs/manufacturing/PCBWAY_CAM_REQUEST.md out/preorder/PCBWAY-CAM-REQUEST.md
+          printf '%s\n' 'NOT FOR FABRICATION / QUOTATION AND CAM ENGINEERING REVIEW ONLY' 'Finger geometry is frozen; default bevel may cut copper.' 'No CAM normalization, no auto-modification, no manufacturing order.' 'Review report and obtain written approval; create a separately validated release.' > out/preorder/00-DO-NOT-MANUFACTURE.txt
+          printf 'Source commit: %s\nWorkflow: %s\n' "$GITHUB_SHA" "$GITHUB_WORKFLOW" > out/preorder/MANIFEST.txt
+          kicad-cli version >> out/preorder/MANIFEST.txt
+          find out/preorder/gerbers/ -type f -size +0c | sort > out/preorder/GERBER-DRILL-FILE-LIST.txt
+          test "$(wc -l < out/preorder/GERBER-DRILL-FILE-LIST.txt)" -ge 8
+          test -s out/preorder/BOM-from-KiCad.csv
+          find out/preorder -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > out/preorder/SHA256SUMS.txt
+          (cd out && zip -qr elfii-32k-CAM-REVIEW-NOT-FOR-FAB.zip preorder/)
+      - name: Upload traceable pre-order review package
+        uses: actions/upload-artifact@v4
+        with:
+          name: elfii-32k-cam-review-NOT-FOR-FAB
+          path: |
+            out/elfii-32k-CAM-REVIEW-NOT-FOR-FAB.zip
+            out/preorder/
+          if-no-files-found: error

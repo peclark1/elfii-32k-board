@@ -1,0 +1,13 @@
+Reference,Quantity,Value,Footprint,Recommended specification,Fitment and ordering notes
+U1,1,74HC573,Package_DIP:DIP-20_W7.62mm,5 V 74HC573 octal transparent latch PDIP-20,Socket recommended; Hyperboard high-address capture
+U2,1,CY62256-70PC,Package_DIP:DIP-28_W15.24mm,32K x 8 5 V SRAM DIP-28 70 ns or verified compatible,Check real replacement pinout and 5 V rating; socket
+U3,1,74HC151,Package_DIP:DIP-16_W7.62mm,5 V 74HC151 multiplexer PDIP-16,Do NOT substitute 74LS151 with 22k pulldowns
+U4,1,CD4011,Package_DIP:DIP-14_W7.62mm,5 V CD4011 quad NAND PDIP-14,One gate provides inverted A15; spare inputs defined
+SW1,1,RAM_PAGE_ENABLE,Button_Switch_THT:SW_DIP_SPSTx08_Slide_9.78x22.5mm_W7.62mm_P2.54mm,8 position SPST DIP slide switch 2.54 mm pitch,Check actual chosen vendor footprint before buying
+RN1,1,8x22K PULLDOWN,Resistor_THT:R_Array_SIP9,9 pin bussed resistor network 8 x 22k 5 percent,SINGLE common to GND; not eight isolated resistors
+JP1,1,RAM_HALF LOW/HIGH,Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical,1x3 2.54 mm breakaway male pin header,Include one removable shorting shunt for LOW or HIGH
+JP2,1,MB_RAM_DISABLE,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,1x2 2.54 mm male pin header,Do NOT fit shunt by default; optional RAM-disable to GND
+C1-C4,4,100n,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm,100 nF ceramic >=16 V radial 5 mm pitch,Local 100 nF for each U1-U4
+C5,1,10u,Capacitor_THT:CP_Radial_D5.0mm_P2.00mm,10 uF electrolytic >=10 V 5 mm body 2 mm pin pitch,Observe polarity; physical height/diameter check
+J1,1,ELFII_P3_86,ELFII_Expansion:ELFII_Edge_86_Rev2_Unverified,86 plated on-board gold-finger contacts,INTEGRAL PCB not a separately purchasable connector
+PCB,1,ELFII_32K_BOARD,Custom 177.8x127.127mm two-layer FR4,1.6mm nominal 1oz outer copper selective hard gold requested,NOT FOR ORDER until CAM/process release
