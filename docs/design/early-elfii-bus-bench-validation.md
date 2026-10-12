@@ -1,6 +1,16 @@
-# Original ELF II bus verification before routing
+# Original ELF II bus verification — remaining questions
 
-This is the shortest set of **unpowered bench observations** that will resolve the remaining electrical compatibility questions. Record meter observations rather than assuming the Hyperboard connector functions are identical to the user's early original motherboard.
+**Slot-5 motherboard RAM inhibit is not an open issue:** the original
+Netronics ELF II's onboard RAM is disabled when the known-working AVI
+Hyperboard is inserted in slot 5 (previous work, user confirmed).
+The Hyperboard grounds original expansion contact 69, identified in period
+Netronics documentation as `MOTHER BD. MEMORIES OFF`. The new SRAM card
+therefore routes J1-69 to JP2-1 and JP2-2 to GND; install the shunt to
+reproduce the Hyperboard's Slot-5 function.
+
+The tests below are for **other slot/revision uncertainties, contact 82,
+bus timing, and Giant Board/other memory coexistence**, rather than a
+request to rediscover already-established Slot-5 behavior.
 
 ## Safety and setup
 
@@ -16,7 +26,7 @@ This is the shortest set of **unpowered bench observations** that will resolve t
 | --- | --- | --- |
 | J1-1 / J1-2 | Continuity to 5 V distribution (unpowered) | Power feed confirmation |
 | J1-5 / J1-80 | Continuity to 0 V ground | Known ground returns |
-| J1-69 | Resistance to ground, then trace to original motherboard memory disable/decode network | Netronics original 4K card describes contact 69 as “MOTHER BD. MEMORIES OFF”; Hyperboard labelled GND |
+| J1-69 / JP2 | On other slot/revision configurations, trace the RAM-disable path and the new PCB J1-69 -> JP2-1 connection | Already known to disable the user's original motherboard RAM when Hyperboard grounds contact 69 in Slot 5 |
 | J1-82 | Continuity to pad 80 and ground | Original and Hyperboard references may differ |
 | J1-24 / J1-30 | Continuity to 1802 /MWR and /MRD circuitry | Control-signal orientation and pin numbering |
 | J1-28 | Continuity to 1802 TPA | Address latch reference |
@@ -42,6 +52,6 @@ With a scope or logic analyzer, investigate only the verified pins:
 | TPA waveform | — | Bare ELF II | |
 | Giant Board ROM/RAM ranges | — | ELF II + Giant Board | |
 
-Once these are known, update the KiCad connector assignment and decide whether a jumper-controlled original-RAM-disable feature belongs in the **Rev B** schematic. Keep J1-69 disconnected until verified.
+Do not leave J1-69 disconnected on the new Hyperboard-derived PCB: the Slot-5 RAM-disable requirement has been established. Route J1-69 to JP2-1, and JP2-2 to GND; keep J1-82 disconnected pending separate identification.
 
 Source for contact 69: `ELF II - 4K Memory Board Schematic.pdf`, sheet 2, “MOTHER BD. MEMORIES OFF / IF USED”.
