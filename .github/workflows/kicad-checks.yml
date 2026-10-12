@@ -32,9 +32,10 @@ jobs:
           kicad-cli sch export netlist -o out/elfii-32k-board.net hardware/kicad/elfii-32k-board.kicad_sch
       - name: Require clean KiCad schematic ERC
         run: |
-          kicad-cli sch erc hardware/kicad/elfii-32k-board.kicad_sch -o out/erc.txt
+          kicad-cli sch erc --exit-code-violations hardware/kicad/elfii-32k-board.kicad_sch -o out/erc.txt || { cat out/erc.txt; exit 1; }
           cat out/erc.txt
       - name: Verify exported KiCad pin/net assignments
+        if: always()
         run: python3 tests/test_netlist.py out/elfii-32k-board.net
       - name: Guard disputed ELF II bus contacts
         run: python3 tests/test_bus_contact_safety.py
