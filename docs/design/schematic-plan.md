@@ -44,3 +44,7 @@ Status: design specification only; no electrical netlist has been approved.
 4. Real KiCad schematic + ERC.
 5. Component placement and PCB routing + DRC.
 6. Hardware fabrication only after documented review.
+
+## Electrical draft completed, pending verification
+
+The preliminary connected schematic is in `hardware/kicad/elfii-32k-board.kicad_sch`. See `sram-electrical-design.md` for pin map and decode truth table. It replaces the concept-only 74LS138 with a region-select XOR and three OR gates, using an inverter for enable and TPA. **Do not authorize fabrication until KiCad ERC/DRC and independent electrical review.**
