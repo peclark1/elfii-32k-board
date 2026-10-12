@@ -17,3 +17,15 @@ and functional validation before fabrication.
 
 See the routing run's uploaded hyperboard-route-preview artifact
 for before/after DRC, full routing log, and review SVGs.
+
+## Physical pre-fabrication review (2026-10-12)
+
+The subsequent `feature/hyperboard-pcb-prefab-review` branch moves the
++5 V connecting via out of the edge-contact/bevel zone, adds independent
+front/back GND pours (held behind the tongue), implements a copper-path
+test for J1-69 to JP2-1, and runs an independent KiCad 9 filled-board
+DRC/ERC gate. Earlier references to J1-69 being **physically NC** apply
+only to older designs, not this corrected circuit.
+
+The revised review is still NOT fabrication-ready. See
+[prefabrication-layout-review-2026-10-12.md](prefabrication-layout-review-2026-10-12.md).
