@@ -18,6 +18,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y kicad
           kicad-cli version
+      - name: Preserve Gerber-derived connector and original board outline
+        run: python3 tests/test_mechanical_geometry.py
       - name: Verify SRAM selection truth table
         run: python3 tests/test_ram_select_logic.py
       - name: Verify schematic grid alignment
