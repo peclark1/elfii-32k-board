@@ -51,7 +51,7 @@ It is removed only after a genuine schematic-to-PCB synchronization.
 
 ## Verified routing milestone — 12 October 2026
 
-The initial 426-track/27-via trial was superseded by the coordinator-accepted [revised 438-track, 35-via Hyperboard PCB preview](https://github.com/peclark1/elfii-32k-board/tree/experiment/hyperboard-route-b57bb49a), where **J1-69 is physically routed to JP2-1**. The [pre-fabrication review branch](https://github.com/peclark1/elfii-32k-board/tree/feature/hyperboard-pcb-prefab-review) adds two GND zones, moves a dangerous +5V via out of the finger region, and independently verifies the copper in CI. This is a **review only, not fabrication authorization**. See [the updated PCB review](docs/design/prefabrication-layout-review-2026-10-12.md) and [the historical checkpoint](docs/design/hyperboard-routing-checkpoint-2026-10-12.md).
+The initial 426-track/27-via trial was superseded by the coordinator-accepted [revised 438-track, 35-via Hyperboard PCB preview](https://github.com/peclark1/elfii-32k-board/tree/experiment/hyperboard-route-b57bb49a), where **J1-69 is physically routed to JP2-1**. The [pre-fabrication review branch](https://github.com/peclark1/elfii-32k-board/tree/feature/hyperboard-pcb-prefab-review) adds two GND zones, moves a dangerous +5V via out of the finger region, and independently verifies the copper in CI. This is a **review only, not fabrication authorization**. See [the updated PCB review](docs/design/prefabrication-layout-review-2026-10-12.md), [measured +5V and decoupling paths](docs/design/prefab-power-and-decoupling-measurements-2026-10-12.md), and [the historical checkpoint](docs/design/hyperboard-routing-checkpoint-2026-10-12.md).
 
 ## Critical safety holds
 
