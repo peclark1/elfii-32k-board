@@ -1,0 +1,59 @@
+name: Hyperboard routed PCB independent pre-fab checks
+
+on:
+  push:
+    branches: ["feature/hyperboard-pcb-prefab-review"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pcb-review:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install KiCad 9 CLI and pcbnew
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository -y ppa:kicad/kicad-9.0-releases
+          sudo apt-get update
+          sudo apt-get install -y kicad
+          kicad-cli version
+      - name: Verify mechanical geometry and physical copper
+        run: |
+          python3 tests/test_mechanical_geometry.py
+          python3 tests/test_bus_contact_safety.py
+          python3 tests/test_routed_board_review.py
+      - name: Schematic export/ERC and complete PCB pad netlist verification
+        run: |
+          mkdir -p out/prefab
+          kicad-cli sch export netlist -o out/prefab/board.net hardware/kicad/elfii-32k-board.kicad_sch
+          kicad-cli sch erc --exit-code-violations -o out/prefab/erc.txt hardware/kicad/elfii-32k-board.kicad_sch
+          python3 tests/test_netlist.py out/prefab/board.net
+          python3 tests/test_pcb_net_assignment.py out/prefab/board.net hardware/kicad/elfii-32k-board.kicad_pcb
+      - name: Native KiCad fill GND zones in a temporary project-directory PCB
+        run: |
+          /usr/bin/python3 tests/fill_zones.py \
+            hardware/kicad/elfii-32k-board.kicad_pcb \
+            hardware/kicad/elfii-32k-prefab-filled.kicad_pcb
+      - name: Strict project-local KiCad 9 DRC (filled copper)
+        run: |
+          kicad-cli pcb drc --exit-code-violations \
+            -o out/prefab/drc-filled.txt \
+            hardware/kicad/elfii-32k-prefab-filled.kicad_pcb
+          cat out/prefab/drc-filled.txt
+          python3 tests/check_candidate_drc.py out/prefab/drc-filled.txt
+      - name: Render both routed copper sides for further layout review
+        run: |
+          mkdir -p out/prefab/svg
+          kicad-cli pcb export svg --mode-multi \
+            -l F.Cu,B.Cu,F.SilkS,Edge.Cuts \
+            -o out/prefab/svg/ hardware/kicad/elfii-32k-prefab-filled.kicad_pcb
+      - name: Preserve review evidence (no fabrication file generation)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: elfii-prefab-review-evidence
+          path: out/prefab/
