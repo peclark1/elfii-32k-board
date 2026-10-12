@@ -36,6 +36,9 @@ def main():
     max_lengths = {}
     for segment in forms(source, "segment"):
         w = num(segment, "width")
+        if w < 0.2:
+            net = int(re.search(r"\(net (\d+)\)", segment).group(1))
+            assert net not in (26, 27), "Narrow trace unexpectedly on +5V or GND"
         a, b = at(segment, "start"), at(segment, "end")
         n = hypot(b[0]-a[0], b[1]-a[1])
         widths[w] += 1
@@ -97,6 +100,9 @@ def main():
     print(f"J1: {len(fingers)} fingers, 43 per copper face; pitch {min_pitch:.4f} mm")
     print(f"J1: {fingers[0][4]:.4f} x {fingers[0][5]:.4f} mm copper pads")
     print(f"J1: insertion-edge copper setback {copper_setback:.4f} mm")
+    assert max_lengths.get(0.15, 0.0) < 5.0, (
+        "Review needed: a 0.15 mm signal section is 5 mm or longer"
+    )
     for width in sorted(widths):
         print(f"Traces {width:.3f} mm: {widths[width]} segments, "
               f"{lengths[width]:.2f} mm total, {max_lengths[width]:.2f} mm longest")
