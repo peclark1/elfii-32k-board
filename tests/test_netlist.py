@@ -141,7 +141,18 @@ def main():
         errors.append("RAM_CS_N incorrectly contains J1-69; Hyperboard P3 RAM_CE is not SRAM /CS")
 
     if errors:
-        print("\n".join(errors))
+        # Show the actual net for each missing device pin, so an incorrect
+        # connection can be distinguished from a truly unconnected pin.
+        reverse = {}
+        for net_name, pins in nets.items():
+            for item in pins:
+                reverse.setdefault(item, []).append(net_name)
+        print(f"FAIL: {len(errors)} source pin-map violations")
+        for signal, required in EXPECTED.items():
+            actual = nets.get(signal, set())
+            for item in required:
+                if item not in actual:
+                    print(f"  {signal}: {item} is on {reverse.get(item, ['<unconnected>'])}")
         raise SystemExit(f"FAIL: {len(errors)} source pin-map violations")
     count = sum(map(len, EXPECTED.values()))
     print(f"PASS: {count} required Hyperboard-derived pin/net memberships across {len(EXPECTED)} nets")
