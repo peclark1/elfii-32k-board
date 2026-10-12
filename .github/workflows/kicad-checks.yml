@@ -40,9 +40,9 @@ jobs:
         run: |
           mkdir -p out/gerbers
           kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Mask,B.Mask,Edge.Cuts -o out/gerbers/ hardware/kicad/elfii-32k-board.kicad_pcb
-      - name: Run KiCad schematic ERC (diagnostics only)
+      - name: Require clean KiCad schematic ERC
         run: |
-          kicad-cli sch erc hardware/kicad/elfii-32k-board.kicad_sch -o out/erc.txt || true
+          kicad-cli sch erc hardware/kicad/elfii-32k-board.kicad_sch -o out/erc.txt
           cat out/erc.txt
       - name: Run KiCad PCB DRC (diagnostics only, PCB intentionally unrouted)
         run: |
@@ -50,7 +50,7 @@ jobs:
           cat out/drc.txt
       - name: Explain outstanding electrical validation
         run: |
-          echo "ERC and DRC reports are diagnostics only until all violations are reviewed and cleared."
+          echo "Schematic ERC is now enforced. PCB DRC remains diagnostic while intentionally unrouted."
           echo "PCB routing is intentionally incomplete. Do not manufacture."
       - name: Upload schematic PDF, netlist and Gerbers
         if: always()
