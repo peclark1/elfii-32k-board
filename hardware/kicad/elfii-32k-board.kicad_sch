@@ -405,6 +405,7 @@
 (wire (pts (xy 177.800 245.110) (xy 172.720 245.110)) (stroke (width 0) (type default)) (uuid "d4e70000-0000-4000-8000-000000000501"))
 (label "TPA" (at 172.720 245.110 0) (effects (font (size 1.016 1.016)) (justify right bottom)) (uuid "d4e70000-0000-4000-8000-000000000502"))
 (wire (pts (xy 205.740 245.110) (xy 210.820 245.110)) (stroke (width 0) (type default)) (uuid "d4e70000-0000-4000-8000-000000000503"))
+(label "LATCH_CLK" (at 210.820 245.110 0) (effects (font (size 1.016 1.016)) (justify left bottom)) (uuid "fa112026-0000-4000-8000-000000000999"))
 
 (symbol (lib_id "ELFII_32K:U3") (at 190.500 275.590 0) (unit 2) (in_bom yes) (on_board yes) (dnp no)
 (uuid "d4e70000-0000-4000-8000-000000000505")
