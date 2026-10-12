@@ -14,7 +14,7 @@ import pcbnew
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tests"))
-from test_netlist import read_nets  # noqa: E402
+from test_netlist import read_nets, balanced_forms  # noqa: E402
 
 BOARD = ROOT / "hardware/kicad/elfii-32k-board.kicad_pcb"
 
@@ -72,21 +72,33 @@ def main():
     target = Path(sys.argv[2])
     if target.resolve() == BOARD.resolve():
         raise SystemExit("Refusing to overwrite original PCB")
-    board = pcbnew.LoadBoard(str(BOARD))
-    assert board is not None
+    # Deleting hundreds of old PCB_TRACK objects through KiCad9's Python SWIG
+    # bindings can crash the interpreter. Work on a *textual temporary copy*
+    # instead, then let pcbnew load a clean, valid KiCad board. This retains the
+    # exact edge-contact footprint bytes and all Edge.Cuts shapes.
+    target.parent.mkdir(parents=True, exist_ok=True)
+    source = BOARD.read_text(encoding="utf-8")
+    stripped = {"segment": 0, "via": 0, "zone": 0, "footprint": 0}
+    for kind in ("segment", "via", "zone"):
+        blocks = balanced_forms(source, kind + " ")
+        stripped[kind] = len(blocks)
+        for block in blocks:
+            source = source.replace(block, "", 1)
+    for block in balanced_forms(source, "footprint "):
+        if 'fp_text reference "J1"' not in block:
+            source = source.replace(block, "", 1)
+            stripped["footprint"] += 1
+    safe_base = target.parent / "elfii-32k-candidate-blank-base.kicad_pcb"
+    safe_base.write_text(source, encoding="utf-8")
+    print(f"Removed old architecture on temporary board: {stripped}", flush=True)
+
+    board = pcbnew.LoadBoard(str(safe_base))
+    if board is None:
+        raise RuntimeError("KiCad9 cannot load mechanically preserved base PCB")
     original_j1 = [fp for fp in board.GetFootprints() if fp.GetReference() == "J1"]
     if len(original_j1) != 1:
         raise RuntimeError("Expected exactly one original Gerber-derived edge connector")
-    j1 = original_j1[0]
-    assert len(list(j1.Pads())) == 86, "Original 86 copper fingers are missing"
-
-    for track in list(board.GetTracks()):
-        board.Remove(track)
-    for zone in list(board.Zones()):
-        board.Remove(zone)
-    for footprint in list(board.GetFootprints()):
-        if footprint.GetReference() != "J1":
-            board.Remove(footprint)
+    assert len(list(original_j1[0].Pads())) == 86, "Original 86 copper fingers missing"
 
     pin_nets = {}
     for signal, nodes in read_nets(netlist).items():
