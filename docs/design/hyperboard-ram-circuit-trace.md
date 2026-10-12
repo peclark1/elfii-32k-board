@@ -8,7 +8,7 @@ This note records the source schematic as drawn before adapting it to the standa
 
 | Ref | Part | Relevant source pins / nets | SRAM role | Standalone disposition |
 | --- | --- | --- | --- | --- |
-| P3 | ELF II 86-contact edge connector | 24 `/MWR`; 28 `TPA`; 30 `/MRD`; 34/38/42/46/50/54/58/62 = D7..D0; 36/40/44/48/52/56/60/64 = multiplexed A7..A0; 69 = source net `RAM_CE` | Brings the 1802 multiplexed address, data and memory controls to the card | Keep existing verified mechanical geometry. Treat pin 69 separately and default-open until early-Netronics behavior is bench verified. |
+| P3 | ELF II 86-contact edge connector | 24 `/MWR`; 28 `TPA`; 30 `/MRD`; 34/38/42/46/50/54/58/62 = D7..D0; 36/40/44/48/52/56/60/64 = multiplexed A7..A0; 69 = source net `RAM_CE` | Brings the 1802 multiplexed address, data and memory controls to the card | Keep existing verified mechanical geometry. J1-69 → JP2-1, JP2-2 grounded, shunt normally open; Slot-5 disable behavior established; J1-82 stays NC. |
 | A8 | 74HC573 | D0 p2<-MA7, D1 p3<-MA6, D2 p4<-MA5, D3 p5<-MA4, D4 p6<-MA3, D5 p7<-MA2, D6 p8<-MA1, D7 p9<-MA0; Q0 p19=A15, Q1 p18=A14, Q2 p17=A13, Q3 p16=A12, Q4 p15=A11, Q5 p14=A10, Q6 p13=A9, Q7 p12=A8; LE/Load p11=TPA; /OE p1=GND; VCC p20, GND p10 | Captures the high address byte while the 1802 MA bus is in its high-address phase | **Keep exactly.** This replaces the experimental 74HCT273/inverter arrangement. |
 | A11 | CY62256-70PC | A0..A7 p10,9,8,7,6,5,4,3 <- MA0..MA7; A8..A14 p25,24,21,23,2,26,1 <- latched A8..A14; Q0..Q7 p11,12,13,15,16,17,18,19 <-> D0..D7; /OE p22=/MRD; /WE p27=/MWR; /CS p20 from U1 /Z; VCC p28, GND p14 | 32K x 8 SRAM | **Keep exactly.** |
 | SW1 | 8-position DIP | left/common side tied +5V; positions labelled 0000,1000,...7000; right side drives U1 I0..I7 | Enables individual 4K pages within the selected 32K half | **Keep concept and pin ordering.** |
@@ -65,7 +65,7 @@ The Hyperboard schematic labels P3 contact 69 `RAM_CE`, but that net is separate
 
 **Do not connect P3-69 to CY62256 /CS.** The CY62256 /CS comes from U1 pin 6 (/Z).
 
-On the standalone board P3-69 should only be offered through an optional, normally-open motherboard-RAM-disable jumper to GND, and must remain marked unverified for the early Netronics motherboard until bench testing establishes its behavior.
+On the standalone board P3-69 should only be offered through an optional, normally-open motherboard-RAM-disable jumper to GND, and it is **already known from Slot-5 testing to disable motherboard RAM**. Do not permanently bond J1-69 to GND.
 
 ## Cross-check against the AVI ELF II motherboard
 
@@ -85,7 +85,7 @@ The rebuild will therefore use:
 
 - 74HC573 high-address latch;
 - CY62256-70PC/compatible 62256;
-- 74LS151 4K-page selector;
+- 74HC151 pin-compatible 4K-page selector (intentional TTL LOW-current adaptation of source 74LS151);
 - 8-position DIP + 8 x 22K pull-down network;
 - one CD4011 gate to create /A15, with unused inputs tied;
 - one 1x3 LOW/HIGH 32K-half jumper;
