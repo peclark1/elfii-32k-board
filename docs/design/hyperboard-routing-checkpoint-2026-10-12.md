@@ -49,7 +49,7 @@ Additional automated acceptance:
 - Hyperboard-specific schematic pin/net regression: 138 expected memberships
   across 41 nets, including MA, data, 573 high latch, page selector and controls.
 - KiCad exported schematic to PCB pad/net consistency: 137 connected pins;
-  204 physical pads reviewed; **J1 contact 69 intentionally exempt/NC**.
+  204 physical pads reviewed; **J1 contact 69 intentionally exempt/NC in this historical route checkpoint; revised netlist validation now requires JP2 routing**.
 - Full mechanically measured 86 edge fingers and 14 board-outline segments:
   unchanged.
 - Output file opens in native KiCad 9, and Freerouting SES imports successfully.
@@ -58,12 +58,15 @@ Additional automated acceptance:
 
 These are the remaining decisions and hard blockers:
 
-1. **Original early-Netronics J1-69:** Hyperboard calls it `RAM_CE` and grounds
-   it; period original documentation describes it as `MOTHER BD. MEMORIES OFF
-   (if used)`. The current **schematic depicts an optional disable jumper**,
-   but the physical J1-69 copper finger is left **NC** in the routed preview.
-   Do not close the jumper or assume this is a fully synchronized PCB.
-   J1-82 is also intentionally NC until investigated.
+1. **Slot-5 onboard RAM inhibit is resolved as a function, but the earlier
+   routed preview still has an open connector contact.** The original
+   Netronics label is `MOTHER BD. MEMORIES OFF`; the Hyperboard grounds
+   J1-69 and is already known from prior work to disable the user's original
+   ELF II motherboard RAM when plugged into slot 5. The revised PCB
+   generator now routes **J1-69 to JP2-1; JP2-2 to GND**, so a closed jumper
+   reproduces that behavior. Re-run autorouting/DRC and do not fabricate
+   the **old** `experiment/hyperboard-route-ceee8d6e` branch, which left
+   J1-69 NC. Contact J1-82 remains unverified/NC.
 2. **Onboard 2101 RAM and Giant Board coexistence:** test actual early motherboard
    and installed expansion configuration, then establish a safe memory map
    before enabling the new RAM on hardware.
@@ -89,7 +92,7 @@ routing study instead of pretending it matches the current electrical schematic.
 
 Review front/back SVGs and native routed PCB from the Action artifact.
 Then address the single library-footprint finding and evaluate the electrical
-and mechanical open questions above. **After the schematic/PCB contact-69
-decision is settled**, remove the rebuild marker, promote the validated routed
-design onto `main`, rerun the full source-PCB KiCad CI/DRC gates, and only then
-consider fabrication outputs.
+and mechanical open questions above. With the Slot-5 J1-69 routing requirement now decided, validate a newly
+routed revision in which J1-69 physically reaches JP2-1. Once that revision
+passes full KiCad ERC, netlist, and PCB DRC checks, consider promotion onto
+`main`; other physical/bus/fabrication holds remain.
