@@ -8175,14 +8175,7 @@
 		(net 26)
 		(uuid "42216920-f91e-4b93-9221-107d4f8822d9")
 	)
-	(segment
-		(start 174.793 150.627)
-		(end 173.5836 149.4176)
-		(width 0.2)
-		(layer "F.Cu")
-		(net 26)
-		(uuid "4928bb7f-fd00-4d42-ba85-ae129075810f")
-	)
+	
 	(segment
 		(start 146.6273 70.1549)
 		(end 146.512 70.0396)
@@ -8247,14 +8240,7 @@
 		(net 26)
 		(uuid "98dfc3ce-70ef-47db-a87b-1393a845f6b4")
 	)
-	(segment
-		(start 173.5836 149.4176)
-		(end 173.5836 148.7424)
-		(width 0.2)
-		(layer "F.Cu")
-		(net 26)
-		(uuid "cfe95abf-12f9-4d2d-9a54-425a52d6efd4")
-	)
+	
 	(segment
 		(start 146.0696 70.0396)
 		(end 145.03 69)
@@ -8271,22 +8257,8 @@
 		(net 26)
 		(uuid "eae46b3d-0137-4810-b739-288f10463eaa")
 	)
-	(via
-		(at 174.793 150.627)
-		(size 0.6)
-		(drill 0.3)
-		(layers "F.Cu" "B.Cu")
-		(net 26)
-		(uuid "6282c97e-c020-478d-b8e1-1054f16deb11")
-	)
-	(segment
-		(start 174.793 150.627)
-		(end 173.5836 149.4176)
-		(width 0.2)
-		(layer "B.Cu")
-		(net 26)
-		(uuid "050d95d4-66c1-4369-b883-f96291224419")
-	)
+	
+	
 	(segment
 		(start 157 128.78)
 		(end 157 126.24)
@@ -8407,14 +8379,7 @@
 		(net 26)
 		(uuid "e7b75ef2-6498-4b1c-a156-2c2d74100f0e")
 	)
-	(segment
-		(start 173.5836 149.4176)
-		(end 173.5836 148.7424)
-		(width 0.2)
-		(layer "B.Cu")
-		(net 26)
-		(uuid "e88e9f9d-9a36-464e-a92c-7adce4baa138")
-	)
+	
 	(segment
 		(start 157 118.62)
 		(end 157 116.08)
@@ -9784,4 +9749,77 @@
 		(uuid "aae12f90-4854-4cbc-b4dc-40a4b2e41d7b")
 	)
 	(embedded_fonts no)
+
+	(segment
+		(start 173.5836 148.7424)
+		(end 173.5836 143.9957)
+		(width 0.2)
+		(layer "F.Cu")
+		(net 26)
+	)
+	(segment
+		(start 173.5836 143.9957)
+		(end 175.3 142.2793)
+		(width 0.2)
+		(layer "F.Cu")
+		(net 26)
+	)
+	(segment
+		(start 173.5836 143.9957)
+		(end 175.3 142.2793)
+		(width 0.2)
+		(layer "B.Cu")
+		(net 26)
+	)
+	(via
+		(at 175.3 142.2793)
+		(size 0.6)
+		(drill 0.3)
+		(layers "F.Cu" "B.Cu")
+		(net 26)
+	)
+	(zone
+		(net 27)
+		(net_name "GND")
+		(layer "F.Cu")
+		(hatch edge 0.508)
+		(connect_pads
+			(clearance 0.3)
+		)
+		(min_thickness 0.2)
+		(fill yes
+			(thermal_gap 0.3)
+			(thermal_bridge_width 0.3)
+			(island_removal_mode 1)
+			(island_area_min 10)
+		)
+		(polygon
+			(pts
+				(xy 32.45 27.7) (xy 207.55 27.7)
+				(xy 207.55 141.5) (xy 32.45 141.5)
+			)
+		)
+	)
+	(zone
+		(net 27)
+		(net_name "GND")
+		(layer "B.Cu")
+		(hatch edge 0.508)
+		(connect_pads
+			(clearance 0.3)
+		)
+		(min_thickness 0.2)
+		(fill yes
+			(thermal_gap 0.3)
+			(thermal_bridge_width 0.3)
+			(island_removal_mode 1)
+			(island_area_min 10)
+		)
+		(polygon
+			(pts
+				(xy 32.45 27.7) (xy 207.55 27.7)
+				(xy 207.55 141.5) (xy 32.45 141.5)
+			)
+		)
+	)
 )
