@@ -34,3 +34,33 @@ jobs:
           grep -F -A 5 -m 1 '[copper_edge_clearance]' out/review/drc-after.txt || true
           echo "=== Summarized physical checks ==="
           cat out/review/routing-summary.json
+      - name: Check out fully routed review branch in actual KiCad project directory
+        uses: actions/checkout@v4
+        with:
+          ref: experiment/hyperboard-route-ceee8d6e
+      - name: Install KiCad 9 for final-location DRC
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository -y ppa:kicad/kicad-9.0-releases
+          sudo apt-get update
+          sudo apt-get install -y kicad
+      - name: Verify native DRC with project-local footprint libraries present
+        run: |
+          mkdir -p out/location-review
+          kicad-cli pcb drc \
+            hardware/kicad/elfii-32k-board.kicad_pcb \
+            -o out/location-review/drc-in-project.txt || true
+          cat out/location-review/drc-in-project.txt | grep -E 'Found [0-9]+ (DRC violations|unconnected pads|Footprint errors)' || true
+          python3 tests/check_candidate_drc.py out/location-review/drc-in-project.txt
+          if grep -F '[lib_footprint_issues]' out/location-review/drc-in-project.txt; then
+            echo "Footprint library issue remains even inside proper KiCad project"
+            exit 1
+          fi
+          echo "PASS: project-local connector footprint library resolves correctly"
+      - name: Upload project-directory native DRC verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: routed-board-project-directory-drc
+          path: out/location-review/
