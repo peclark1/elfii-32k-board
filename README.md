@@ -23,7 +23,7 @@ A standalone, period-styled **32 KiB SRAM expansion board** for the original Net
 
 ## KiCad
 
-The **KiCad schematic and PCB are pending electrical and mechanical verification**. Do not treat earlier generated pictures as wiring drawings. The first schematic should implement a documented 1802/Netronics bus interface with reviewable signal names, footprint assignments and ERC checks; PCB work follows schematic approval.
+The **KiCad PCB now contains the measured Hyperboard Rev 2 outline and 86-contact edge connector**, and project-local libraries contain a matching two-unit schematic symbol with copper-Gerber-derived pin numbering. The schematic is not electrically connected, and no board fabrication is authorized. Do not treat earlier generated pictures as wiring drawings. The next stage is to implement the 1802/Netronics bus interface with reviewable signal names, footprint assignments and ERC checks.
 
 ## License
 
