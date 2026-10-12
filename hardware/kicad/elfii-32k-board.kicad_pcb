@@ -8181,7 +8181,7 @@
 	(segment
 		(start 146.6273 70.1549)
 		(end 146.512 70.0396)
-		(width 0.3)
+		(width 0.2)
 		(layer "F.Cu")
 		(net 26)
 		(uuid "4eb5d9e2-6b84-431b-9784-61045e1ade65")
@@ -8205,7 +8205,7 @@
 	(segment
 		(start 146.512 70.0396)
 		(end 146.0696 70.0396)
-		(width 0.3)
+		(width 0.2)
 		(layer "F.Cu")
 		(net 26)
 		(uuid "7aa9270d-f1fc-4951-90da-4febb98785cd")
