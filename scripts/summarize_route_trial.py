@@ -28,14 +28,16 @@ def pcb_metrics(filename):
 
 def drc_metrics(filename):
     txt = Path(filename).read_text(encoding="utf-8")
-    violations = re.search(r"\*\* Found (\d+) DRC violations \*\*", txt)
-    missing = re.search(r"\*\* Found (\d+) unconnected items \*\*", txt)
-    if not violations or not missing:
-        raise RuntimeError(f"Native KiCad DRC summary missing from {filename}")
+    # KiCad 9 writes the DRC item categories into the report body. Its
+    # human-readable summary differs by version and report options, but
+    # the item records are stable and already parsed by check_candidate_drc.
+    # Count all categories other than the separately reported airwires.
     types = Counter(re.findall(r"^\[([a-z][a-z0-9_]+)\]:", txt, re.M))
+    if "** Drc report for " not in txt or not types:
+        raise RuntimeError(f"No native KiCad DRC item report in {filename}")
     return {
-        "violations": int(violations.group(1)),
-        "unconnected_items": int(missing.group(1)),
+        "violations": sum(n for kind, n in types.items() if kind != "unconnected_items"),
+        "unconnected_items": types.get("unconnected_items", 0),
         "categories": dict(types),
     }
 
