@@ -113,7 +113,7 @@
   (pad "72" smd rect (at 17.7800 0) (size 1.397 8.890) (layers "F.Cu" "F.Mask"))
   (pad "71" smd rect (at 17.7800 0) (size 1.397 8.890) (layers "B.Cu" "B.Mask"))
   (pad "70" smd rect (at 20.3200 0) (size 1.397 8.890) (layers "F.Cu" "F.Mask"))
-  (pad "69" smd rect (at 20.3200 0) (size 1.397 8.890) (layers "B.Cu" "B.Mask") (net 18 "/GND"))
+  (pad "69" smd rect (at 20.3200 0) (size 1.397 8.890) (layers "B.Cu" "B.Mask"))
   (pad "68" smd rect (at 22.8600 0) (size 1.397 8.890) (layers "F.Cu" "F.Mask"))
   (pad "67" smd rect (at 22.8600 0) (size 1.397 8.890) (layers "B.Cu" "B.Mask"))
   (pad "66" smd rect (at 25.4000 0) (size 1.397 8.890) (layers "F.Cu" "F.Mask"))
