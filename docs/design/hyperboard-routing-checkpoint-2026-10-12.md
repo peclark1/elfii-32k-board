@@ -1,6 +1,16 @@
 # Hyperboard 32K SRAM PCB — routing checkpoint (2026-10-12)
 
-## Current, verified result
+## Historical first route checkpoint — superseded
+
+**Update 2026-10-12:** The coordinator accepted the later revised PCB at
+`experiment/hyperboard-route-b57bb49a`, whose physical copper connects
+**J1-69 to JP2-1** and JP2-2 to ground. The original Slot-5 RAM-disable
+function is established project evidence. J1-82 remains NC.
+Figures and statements below are preserved to document the **older
+`ceee8d6e` trial**, not to describe the current PCB. See
+[current electrical/physical review](prefabrication-layout-review-2026-10-12.md).
+
+## First routing result (historical)
 
 The **new Hyperboard-derived circuit** has completed its first two-layer copper
 routing pass. This is NOT the earlier A5 custom-logic board.
@@ -49,7 +59,7 @@ Additional automated acceptance:
 - Hyperboard-specific schematic pin/net regression: 138 expected memberships
   across 41 nets, including MA, data, 573 high latch, page selector and controls.
 - KiCad exported schematic to PCB pad/net consistency: 137 connected pins;
-  204 physical pads reviewed; **J1 contact 69 intentionally exempt/NC**.
+  204 physical pads reviewed; **J1-69 remained NC only in this historical trial, now corrected**.
 - Full mechanically measured 86 edge fingers and 14 board-outline segments:
   unchanged.
 - Output file opens in native KiCad 9, and Freerouting SES imports successfully.
@@ -89,7 +99,7 @@ routing study instead of pretending it matches the current electrical schematic.
 
 Review front/back SVGs and native routed PCB from the Action artifact.
 Then address the single library-footprint finding and evaluate the electrical
-and mechanical open questions above. **After the schematic/PCB contact-69
-decision is settled**, remove the rebuild marker, promote the validated routed
+and mechanical open questions above. **After remaining PCB/timing/manufacturing
+release gates are settled**, remove the rebuild marker, promote the validated routed
 design onto `main`, rerun the full source-PCB KiCad CI/DRC gates, and only then
 consider fabrication outputs.
