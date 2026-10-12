@@ -29,7 +29,7 @@ The 1802 presents its *high* address byte on MA0..MA7 during TPA; A8 74HC573 sto
 
 1. Trace /CS electrically from A11 pin 20 through J8, R9/R10/R11, U1 pin 6 and the boot/ROM network; record exact polarity and all jumper cases. No guessing from isolated labels.
 2. Determine whether a simplified 32K LOW/HIGH jumper covers our intended use, or whether 4K-page DIP mapping is essential for coexistence with Giant Board / onboard 2101 RAM.
-3. Verify bus contacts for early Netronics board; especially **contact 69 must not be grounded** based only on AVI labels, and contact 82 remains unverified.
+3. **Updated after proven Slot-5 use:** J1-69 is the original motherboard-memory-disable signal. The revised design routes it via an optional, normally-open JP2 ground shunt; do not use it as a permanent ground return. J1-82 remains NC/unverified, and full system timing/coexistence requires validation.
 4. Build an actual source-to-target pin map, modify schematic **only after** closing (1)-(3); use visible wires/buses, KiCad 9 ERC + extracted-netlist regression; then regenerate PCB connections without modifying 86-finger geometry/outline.
 5. Run KiCad 9 PCB DRC and inspect edge fingers before any fabrication release.
 
