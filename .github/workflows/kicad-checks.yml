@@ -51,6 +51,12 @@ jobs:
         run: |
           kicad-cli pcb drc out/pcb-candidate/elfii-32k-candidate.kicad_pcb -o out/pcb-candidate/drc-unrouted.txt || true
           head -n 100 out/pcb-candidate/drc-unrouted.txt
+      - name: Reject new PCB pad shorts, courtyard, silk, mask and edge violations
+        run: python3 tests/check_candidate_drc.py out/pcb-candidate/drc-unrouted.txt
+      - name: Export unrouted placement front/back SVGs
+        run: |
+          mkdir -p out/pcb-candidate/svg
+          kicad-cli pcb export svg --mode-multi -l F.Cu,B.Cu,F.SilkS,Edge.Cuts -o out/pcb-candidate/svg/ out/pcb-candidate/elfii-32k-candidate.kicad_pcb
       - name: Guard disputed ELF II bus contacts
         run: python3 tests/test_bus_contact_safety.py
 
