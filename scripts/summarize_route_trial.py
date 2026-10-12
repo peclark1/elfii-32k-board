@@ -28,11 +28,11 @@ def pcb_metrics(filename):
 
 def drc_metrics(filename):
     txt = Path(filename).read_text(encoding="utf-8")
-    violations = re.search(r"\\*\\* Found (\\d+) DRC violations \\*\\*", txt)
-    missing = re.search(r"\\*\\* Found (\\d+) unconnected items \\*\\*", txt)
+    violations = re.search(r"\*\* Found (\d+) DRC violations \*\*", txt)
+    missing = re.search(r"\*\* Found (\d+) unconnected items \*\*", txt)
     if not violations or not missing:
         raise RuntimeError(f"Native KiCad DRC summary missing from {filename}")
-    types = Counter(re.findall(r"^\\[([a-z][a-z0-9_]+)\\]:", txt, re.M))
+    types = Counter(re.findall(r"^\[([a-z][a-z0-9_]+)\]:", txt, re.M))
     return {
         "violations": int(violations.group(1)),
         "unconnected_items": int(missing.group(1)),
