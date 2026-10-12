@@ -41,3 +41,7 @@ Route remaining ten nets in the GUI or a DRC-aware router instead of assuming a 
 - Existing 86 edge-finger clearance violations and 14 version-mismatch warnings are explicitly **not approved for fabrication**. Motherboard 2101 RAM/Giant Board coexistence, original contact 69/82 details, TPA timing and edge-plating/bevel also remain open.
 
 **Current status: reviewable intermediate design, not a fabrication candidate.**
+
+## Hyperboard-derived restart
+
+The A5 schematic/PCB remains in Git history as a routing study. The active electrical design is being restarted from the AVI Hyperboard Rev 2 RAM circuit. See [hyperboard-ram-rebuild.md](hyperboard-ram-rebuild.md). Do not extend the A5 PCB routing until the replacement schematic is complete and reviewed.
