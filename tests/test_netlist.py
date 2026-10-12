@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Validate expected ELF II SRAM schematic connections from KiCad-exported netlist.
+"""Validate the Hyperboard-derived ELF II SRAM schematic from a KiCad netlist.
 
-This is an independent pin/net assertion set, NOT a replacement for electrical
-rule checking, analog/timing verification, or physical board validation.
+These assertions are intentionally pin-specific.  They guard the source-traced
+74HC573/CY62256/74LS151 architecture against accidental rewiring; they do not
+replace KiCad ERC or bench timing/compatibility checks.
 """
 import re
 import sys
@@ -10,7 +11,6 @@ from pathlib import Path
 
 
 def balanced_forms(source: str, expression: str):
-    """Return parenthesized top-level expressions with the given initial tag."""
     out = []
     pattern = "(" + expression
     start = 0
@@ -44,8 +44,6 @@ def balanced_forms(source: str, expression: str):
 
 def read_nets(path: Path):
     data = path.read_text(encoding="utf-8")
-    # KiCad legacy-export style: nets list of (net (code "...") (name "...")
-    # and (node (ref "U1") (pin "3")) entries.
     result = {}
     for net in balanced_forms(data, "net "):
         name_match = re.search(r'\(name "([^"]+)"\)', net)
@@ -59,30 +57,71 @@ def read_nets(path: Path):
 
 
 EXPECTED = {
-    "VCC": [("U1", "1"), ("U1", "20"), ("U2", "28"), ("U3", "14"), ("U4", "14"), ("U5", "14")],
-    "GND": [("U1", "10"), ("U2", "14"), ("U3", "7"), ("U4", "7"), ("U5", "7")],
-    "TPA": [("J1", "28"), ("U3", "1")],
-    "LATCH_CLK": [("U3", "2"), ("U1", "11")],
-    "A15": [("U1", "19"), ("U4", "1")],
-    "REGION": [("JP1", "2"), ("U4", "2"), ("R2", "1")],
-    "ENABLE": [("JP2", "1"), ("U3", "3"), ("R1", "1")],
-    "NOT_ENABLE": [("U3", "4"), ("U5", "2")],
-    "MISMATCH": [("U4", "3"), ("U5", "1")],
-    "NCE": [("U5", "3"), ("U2", "20"), ("U5", "4"), ("U5", "9")],
-    "NOE": [("U5", "6"), ("U2", "22")],
-    "NWE": [("U5", "8"), ("U2", "27")],
-    "NMRD": [("J1", "30"), ("U5", "5")],
-    "NMWR": [("J1", "24"), ("U5", "10")],
+    # Core controls
+    "TPA": [("J1", "28"), ("U1", "11")],
+    "~MRD": [("J1", "30"), ("U2", "22")],
+    "~MWR": [("J1", "24"), ("U2", "27")],
+    "RAM_CS_N": [("U3", "6"), ("U2", "20")],
+    # 32K half select
+    "A15": [("U1", "19"), ("U4", "12"), ("U4", "13"), ("JP1", "1")],
+    "A15_N": [("U4", "11"), ("JP1", "3")],
+    "HALF_EN": [("JP1", "2"), ("U3", "7")],
+    # Optional motherboard-RAM disable -- never the SRAM /CS net
+    "MB_RAM_DISABLE": [("J1", "69"), ("JP2", "1")],
 }
-for index in range(8):
-    EXPECTED[f"MA{index}"] = [
-        ("J1", str(64 - index * 4)),
-        ("U1", str([3, 4, 7, 8, 13, 14, 17, 18][index])),
-        ("U2", str([10, 9, 8, 7, 6, 5, 4, 3][index])),
+
+# Direct low-byte address path and reversed high-byte capture into the 573.
+latch_d_pin_for_ma = {7:"2", 6:"3", 5:"4", 4:"5", 3:"6", 2:"7", 1:"8", 0:"9"}
+ram_addr_pin = {0:"10", 1:"9", 2:"8", 3:"7", 4:"6", 5:"5", 6:"4", 7:"3"}
+edge_ma_pin = {7:"36", 6:"40", 5:"44", 4:"48", 3:"52", 2:"56", 1:"60", 0:"64"}
+for bit in range(8):
+    EXPECTED[f"MA{bit}"] = [
+        ("J1", edge_ma_pin[bit]),
+        ("U1", latch_d_pin_for_ma[bit]),
+        ("U2", ram_addr_pin[bit]),
     ]
-    EXPECTED[f"D{index}"] = [("J1", str(62 - index * 4)), ("U2", str([11, 12, 13, 15, 16, 17, 18, 19][index]))]
-for index, (latch, ram) in enumerate(zip([2, 5, 6, 9, 12, 15, 16], [25, 24, 21, 23, 2, 26, 1]), start=8):
-    EXPECTED[f"A{index}"] = [("U1", str(latch)), ("U2", str(ram))]
+
+# Latched high-byte outputs. A15 is above; A14..A8 feed both RAM and page decode as applicable.
+high = {
+    "A14": [("U1","18"), ("U2","1"), ("U3","9")],
+    "A13": [("U1","17"), ("U2","26"), ("U3","10")],
+    "A12": [("U1","16"), ("U2","2"), ("U3","11")],
+    "A11": [("U1","15"), ("U2","23")],
+    "A10": [("U1","14"), ("U2","21")],
+    "A9":  [("U1","13"), ("U2","24")],
+    "A8":  [("U1","12"), ("U2","25")],
+}
+EXPECTED.update(high)
+
+# Bidirectional data bus.
+edge_d_pin = {7:"34", 6:"38", 5:"42", 4:"46", 3:"50", 2:"54", 1:"58", 0:"62"}
+ram_d_pin = {0:"11", 1:"12", 2:"13", 3:"15", 4:"16", 5:"17", 6:"18", 7:"19"}
+for bit in range(8):
+    EXPECTED[f"D{bit}"] = [("J1", edge_d_pin[bit]), ("U2", ram_d_pin[bit])]
+
+# Hyperboard page map: SW1 -> 22K pulldown -> 74LS151 I0..I7.
+mux_i_pin = ["4","3","2","1","15","14","13","12"]
+for page in range(8):
+    EXPECTED[f"PAGE{page}"] = [
+        ("SW1", str(16-page)),
+        ("RN1", str(2+page)),
+        ("U3", mux_i_pin[page]),
+    ]
+
+# Power and defined unused inputs.
+EXPECTED["+5V"] = [
+    ("J1","2"), ("J1","1"),
+    ("U1","20"), ("U2","28"), ("U3","16"), ("U4","14"),
+    *[("SW1", str(i)) for i in range(1,9)],
+    *[(f"C{i}", "1") for i in range(1,6)],
+]
+EXPECTED["GND"] = [
+    ("J1","80"), ("J1","5"),
+    ("U1","1"), ("U1","10"), ("U2","14"), ("U3","8"), ("U4","7"),
+    ("RN1","1"), ("JP2","2"),
+    ("U4","1"), ("U4","2"), ("U4","5"), ("U4","6"), ("U4","8"), ("U4","9"),
+    *[(f"C{i}", "2") for i in range(1,6)],
+]
 
 
 def main():
@@ -95,10 +134,17 @@ def main():
         for item in expected:
             if item not in actual:
                 errors.append(f"{signal} missing {item}; actual={sorted(actual)}")
+
+    # Explicitly guard the source correction: connector P3-69 must not land on SRAM /CS.
+    cs_nodes = nets.get("RAM_CS_N", set())
+    if ("J1", "69") in cs_nodes:
+        errors.append("RAM_CS_N incorrectly contains J1-69; Hyperboard P3 RAM_CE is not SRAM /CS")
+
     if errors:
         print("\n".join(errors))
-        raise SystemExit(f"FAIL: {len(errors)} missing expected connections")
-    print(f"PASS: {sum(map(len, EXPECTED.values()))} required pin/net memberships across {len(EXPECTED)} nets")
+        raise SystemExit(f"FAIL: {len(errors)} source pin-map violations")
+    count = sum(map(len, EXPECTED.values()))
+    print(f"PASS: {count} required Hyperboard-derived pin/net memberships across {len(EXPECTED)} nets")
 
 
 if __name__ == "__main__":
