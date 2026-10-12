@@ -1,33 +1,28 @@
 #!/usr/bin/env python3
-"""Electrical safety guard against silently grounding disputed ELF II contacts.
+"""Protect the proven Slot-5 RAM-disable contact and unresolved J1-82.
 
-This enforces the conservative Rev A2 decision, *not* a claim about which
-contacts the original motherboard physically bonds to ground.
+Original motherboard RAM-disable on pin 69 is established project evidence.
+The shunt to ground stays optional, not permanently installed.
 """
 from pathlib import Path
+import re
 from test_pcb_net_assignment import board_pads
 
 
 def main():
-    board = Path("hardware/kicad/elfii-32k-board.kicad_pcb")
-    nets = board_pads(board)
-    # The period Netronics 4K memory board explicitly calls contact 69
-    # "MOTHER BD. MEMORIES OFF"; do not quietly revert to a GND pin label.
-    symbol_lib = Path("hardware/kicad/ELFII_Expansion.kicad_sym").read_text()
-    embedded_schematic = Path("hardware/kicad/elfii-32k-board.kicad_sch").read_text()
-    for source, body in (("library", symbol_lib), ("schematic", embedded_schematic)):
-        import re
-        matches = re.findall(
-            r'\(name "([^"]+)"[^\n]*\(number "69"', body
-        )
-        assert matches == ["MEMORY_OFF?"], (
-            f"{source} pin 69 must be labeled MEMORY_OFF? (period Netronics reference): {matches}"
-        )
-    for pad in ("69", "82"):
-        assert nets[("J1", pad)] is None, f"J1 pad {pad} has unresolved function, must stay NC"
-    for pad in ("5", "80"):
-        assert nets[("J1", pad)] == "GND", f"J1 pad {pad} must be existing ground return"
-    print("PASS: bus contact 69 and 82 left NC; pads 5 and 80 retain GND")
+    nets = board_pads(Path("hardware/kicad/elfii-32k-board.kicad_pcb"))
+    library = Path("hardware/kicad/ELFII_Expansion.kicad_sym").read_text()
+    schematic = Path("hardware/kicad/elfii-32k-board.kicad_sch").read_text()
+    for name, data in (("library", library), ("schematic", schematic)):
+        matches = re.findall(r'\(name "([^"]+)"[^\n]*\(number "69"', data)
+        assert matches == ["MEMORY_OFF?"], (name, matches)
+    assert nets[("J1", "69")] == "MB_RAM_DISABLE", "J1-69 physically goes to JP2, not NC or GND"
+    assert nets[("JP2", "1")] == "MB_RAM_DISABLE", "JP2-1 is RAM-disable"
+    assert nets[("JP2", "2")] == "GND", "JP2-2 is ground"
+    assert nets[("J1", "82")] is None, "J1-82 stays NC"
+    for number in ("5", "80"):
+        assert nets[("J1", number)] == "GND", f"J1-{number} must remain a GND return"
+    print("PASS: J1-69->JP2-1, JP2-2 GND, shunt optional, J1-82 NC")
 
 
 if __name__ == "__main__":
