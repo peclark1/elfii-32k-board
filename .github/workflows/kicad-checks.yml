@@ -18,6 +18,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y kicad
           kicad-cli version
+      - name: Debug schematic load variants
+        run: python3 tests/debug_schematic_load.py
       - name: Verify SRAM selection truth table
         run: python3 tests/test_ram_select_logic.py
       - name: Verify schematic grid alignment
